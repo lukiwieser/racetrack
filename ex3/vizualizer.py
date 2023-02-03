@@ -1,11 +1,14 @@
 from state import State
 from tkinter import *
-
+import time
 
 class Visualizer:
     def __init__(self, state: State, boardsize=600):
         self.state = state
+        self.old_state = state
         self.init_board(boardsize)
+        # self.window.after(2000, self.check_for_state_change())
+        # self.check_for_state_change()
         self.window.mainloop()
         # self.window.update()
 
@@ -76,4 +79,16 @@ class Visualizer:
 
         # color new position correct
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
+
+    def check_for_state_change(self):
+        g = input("why: ")
+        # time.sleep(1)
+        # if self.state.agent_position == self.old_state.agent_position:
+        #     pass
+        # else:
+        #     self.updateAgent(self.state.agent_position)
+        #     self.old_state.agent_position = self.state.agent_position
+        self.window.update()
+        self.window.after(2000, self.check_for_state_change())
+
 
