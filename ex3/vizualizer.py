@@ -1,16 +1,16 @@
 from state import State
 from tkinter import *
 import time
+import copy
+
 
 class Visualizer:
     def __init__(self, state: State, boardsize=600):
         self.state = state
-        self.old_state = state
+        self.old_state = copy.deepcopy(state)
         self.init_board(boardsize)
-        # self.window.after(2000, self.check_for_state_change())
-        # self.check_for_state_change()
+        self.window.after(0, self.check_for_state_change)
         self.window.mainloop()
-        # self.window.update()
 
     def init_board(self, boardsize):
         """
@@ -69,7 +69,7 @@ class Visualizer:
         """
         self.canvas.itemconfig(int(item), fill=color)
 
-    def updateAgent(self, pos: tuple[int,int]):
+    def updateAgent(self, pos: tuple[int, int]):
 
         # reset color of old posiiton
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "black")
@@ -81,14 +81,10 @@ class Visualizer:
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
 
     def check_for_state_change(self):
-        g = input("why: ")
-        # time.sleep(1)
-        # if self.state.agent_position == self.old_state.agent_position:
-        #     pass
-        # else:
-        #     self.updateAgent(self.state.agent_position)
-        #     self.old_state.agent_position = self.state.agent_position
+        if self.state.agent_position == self.old_state.agent_position:
+            pass
+        else:
+            self.updateAgent(self.state.agent_position)
+            self.old_state.agent_position = copy.deepcopy(self.state.agent_position)
         self.window.update()
-        self.window.after(2000, self.check_for_state_change())
-
-
+        self.window.after(0, self.check_for_state_change)
