@@ -69,13 +69,10 @@ class Visualizer:
         """
         self.canvas.itemconfig(int(item), fill=color)
 
-    def updateAgent(self, pos: tuple[int, int]):
+    def updateAgent(self):
 
         # reset color of old posiiton
-        self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "black")
-
-        # set new position of agent
-        self.state.agent_position = pos
+        self.change_color(self.board[self.old_state.agent_position[0]][self.old_state.agent_position[1]], "black")
 
         # color new position correct
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
@@ -84,7 +81,7 @@ class Visualizer:
         if self.state.agent_position == self.old_state.agent_position:
             pass
         else:
-            self.updateAgent(self.state.agent_position)
+            self.updateAgent()
             self.old_state.agent_position = copy.deepcopy(self.state.agent_position)
         self.window.update()
         self.window.after(0, self.check_for_state_change)
