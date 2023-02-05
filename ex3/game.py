@@ -16,6 +16,9 @@ class Game:
         self.display = Display(start_state)
 
     def play_user(self):
+        """
+        This function starts the user game.
+        """
         not_finsihed = True
 
         while not_finsihed:
