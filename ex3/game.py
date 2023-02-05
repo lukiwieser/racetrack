@@ -1,5 +1,7 @@
 import numpy as np
 from state import State
+from display import Display
+from state import State
 
 
 class Game:
@@ -9,8 +11,22 @@ class Game:
         # initialize Agent with starting position and velocity
         self.agent = self.Agent(self.get_start()[0], (0, 0))  # TODO maybe randomize at which starting cell the agent starts
 
-    def play_user(self):
+        # initalize the visualizer
+        start_state = State(self.racetrack, self.agent.pos)
+        self.display = Display(start_state)
 
+    def play_user(self):
+        not_finsihed = True
+
+        while not_finsihed:
+            input_str = input("Please input the change to velocity. format: \"<int> <int>\": ")
+            input_list = input_str.split(" ")
+            input_tuple = (int(input_list[0]),int(input_list[1]))
+            ret = self.step(input_tuple)
+            self.display.update_agent(ret.agent_position)
+            if ret.agent_position in self.get_end():
+                not_finsihed = False
+                print("You reached the finish line!")
 
     def step(self, game_input: tuple[int,int]):
         """
@@ -40,10 +56,20 @@ class Game:
         new_pos = (self.agent.pos[0] + self.agent.vel[0], self.agent.pos[1] + self.agent.vel[1])
 
         # checking if it is out of bounds
-        # TODO
+        # car cant move out of the grid.
+        if new_pos[0] >= self.racetrack.shape[0]:
+            new_pos = (self.racetrack.shape[0]-1, new_pos[1])
+        if new_pos[0] < 0:
+            new_pos = (0, new_pos[1])
+        if new_pos[1] >= self.racetrack.shape[1]:
+            new_pos = (new_pos[0], self.racetrack.shape[1]-1)
+        if new_pos[1] < 0:
+            new_pos = (new_pos[0], 0)
 
         # checking if it is on an invalid cell
-        # TODO
+        if self.racetrack[new_pos[0]][new_pos[1]] == 0:
+            self.agent.reset_velocity()
+            return self.agent.pos                      # TODO maybe send car back to start, instead of keeping the current position?
 
         # if is has not returned yet, the position is valid
         return new_pos
@@ -109,3 +135,7 @@ class Game:
         def update_agent(self, new_pos, new_vel):
             self.pos = new_pos
             self.vel = new_vel
+
+        def reset_velocity(self):
+            print("reset velocity")
+            self.vel = (0, 0)
