@@ -8,8 +8,14 @@ class Visualizer:
     def __init__(self, state: State, boardsize=600):
         self.state = state
         self.old_state = copy.deepcopy(state)
+
+        # initiate the gameboard
         self.init_board(boardsize)
+
+        # start the event loop that checks for position changes
         self.window.after(0, self.check_for_state_change)
+
+        # start blocking main loop
         self.window.mainloop()
 
     def init_board(self, boardsize):
@@ -72,6 +78,9 @@ class Visualizer:
         self.canvas.itemconfig(int(item), fill=color)
 
     def updateAgent(self):
+        """
+        Updates the rectangles with the correct colors
+        """
 
         # reset color of old posiiton
         self.change_color(self.board[self.old_state.agent_position[0]][self.old_state.agent_position[1]], "black")
@@ -80,6 +89,10 @@ class Visualizer:
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
 
     def check_for_state_change(self):
+        """
+        This methods checks if the position of the car changed and adjusts the coloring of the rectangles if it is necessary.
+        After that it puts itself in the event loop again.
+        """
         if self.state.agent_position == self.old_state.agent_position:
             pass
         else:
