@@ -32,6 +32,8 @@ class Visualizer:
         """
         Converts the initial ndarray-2d array into a grid of rectangles.
 
+        Assumption: the input array has the structure NxN
+
         :param input_array: Initial racecourse
         :param boardsize: size of the displayed board. This is needed so the rectangles have the proper size.
         """
@@ -53,9 +55,9 @@ class Visualizer:
         :param num: integer that represents the cell type.
         """
         if num == 0:
-            return "black"
-        elif num == 1:
             return "white"
+        elif num == 1:
+            return "black"
         elif num == 2:
             return "yellow"
         else:
