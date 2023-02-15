@@ -15,13 +15,13 @@ import time
 map = np.zeros(shape=(50, 50))
 map[:, 4] = 1
 map[:, 5] = 1
-map[49, 4] = 2
-map[49, 5] = 2
-map[0, 4] = 3
-map[0, 5] = 3
+map[49, 4] = 3
+map[49, 5] = 3
+map[0, 4] = 2
+map[0, 5] = 2
 print(map)
 
-game = Game(map)
+game = Game(map, True)
 game.play_user()
 
 # print("hallo")
