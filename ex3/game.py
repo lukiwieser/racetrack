@@ -5,15 +5,17 @@ from state import State
 
 
 class Game:
-    def __init__(self, racetrack: np.ndarray):
+    def __init__(self, racetrack: np.ndarray, visualize = False):
         self.racetrack = racetrack
+        self.visualize = visualize
 
         # initialize Agent with starting position and velocity
-        self.agent = self.Agent(self.get_start()[0], (0, 0))  # TODO maybe randomize at which starting cell the agent starts
+        self.agent = self.Agent(self.get_start_cells()[0], (0, 0))  # TODO maybe randomize at which starting cell the agent starts
 
         # initalize the visualizer
-        start_state = State(self.racetrack, self.agent.pos)
-        self.display = Display(start_state)
+        if visualize:
+            state = State(self.racetrack, self.agent.pos)
+            self.display = Display(state)
 
     def play_user(self):
         """
@@ -22,14 +24,18 @@ class Game:
         not_finsihed = True
 
         while not_finsihed:
-            input_str = input("Please input the change to velocity. format: \"<int> <int>\": ")
+            input_str = input("Please input the change to velocity. format: \"<y> <x>\": ")
             input_list = input_str.split(" ")
             input_tuple = (int(input_list[0]),int(input_list[1]))
-            ret = self.step(input_tuple)
-            self.display.update_agent(ret.agent_position)
-            if ret.agent_position in self.get_end():
+            self.step(input_tuple)
+            if self.is_finished():
                 not_finsihed = False
                 print("You reached the finish line!")
+
+    def is_finished(self):
+        if self.agent.pos in self.get_end_cells():
+            return True
+        return False
 
     def step(self, game_input: tuple[int,int]):
         """
@@ -47,7 +53,8 @@ class Game:
         # create new position. If it is valid, set the agent position to the new position
         self.agent.pos = self.check_pos()
 
-        return self.get_state()
+        if self.visualize:
+            self.display.update_agent(self.agent.pos)
 
     def check_pos(self):
         """
@@ -56,7 +63,7 @@ class Game:
 
         :return: Returns new position if it is valid, else it returns the old one
         """
-        new_pos = (self.agent.pos[0] + self.agent.vel[0], self.agent.pos[1] + self.agent.vel[1])
+        new_pos = (self.agent.pos[0] + self.agent.vel[0], self.agent.pos[1] - self.agent.vel[1]) # self.agent.pos[1] + self.agent.vel[1]
 
         # checking if it is out of bounds
         # car cant move out of the grid.
@@ -99,7 +106,7 @@ class Game:
         """
         return State(self.racetrack, self.agent.pos)
 
-    def get_start(self):
+    def get_start_cells(self):
         """
         Finds all start rectangles.
 
@@ -108,7 +115,7 @@ class Game:
         start_array = np.where(self.racetrack == 2)
         return self.convert(start_array)
 
-    def get_end(self):
+    def get_end_cells(self):
         """
         Finds all end rectangles.
 
