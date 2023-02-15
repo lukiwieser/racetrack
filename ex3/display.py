@@ -5,12 +5,12 @@ import threading
 import copy
 
 class Display:
-    def vis(self, state):
+    def __vis(self, state):
         vis = Visualizer(state)
 
     def __init__(self, state: State):
         self.state = copy.deepcopy(state)
-        t = threading.Thread(target=partial(self.vis, self.state))
+        t = threading.Thread(target=partial(self.__vis, self.state))
         t.start()
 
     def update_agent(self, new_pos: tuple[int,int]):
