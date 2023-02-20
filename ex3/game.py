@@ -92,8 +92,15 @@ class Game:
         :param vel_change: Changes to the velocity
         :return: Returns new velocity if it is valid, else it returns the old one
         """
+        # checks if velocity is not changed by more than +-1
+        allowed = [-1, 0, 1]
+        if vel_change[0] not in allowed or vel_change[1] not in allowed:
+            print("Cannot modify velicity by more then +-1")
+            return self.agent.vel
+
         new_vel = (self.agent.vel[0] + vel_change[0], self.agent.vel[1] + vel_change[1])
 
+        # checks if velocity is >= 0 and < 5
         if new_vel[0] > 4 or new_vel[0] < 0 or new_vel[1] > 4 or new_vel[1] < 0:
             print("Exceeded Velocity limits")
             return self.agent.vel
