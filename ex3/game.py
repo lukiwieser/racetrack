@@ -94,7 +94,9 @@ class Game:
         """
         new_vel = (self.agent.vel[0] + vel_change[0], self.agent.vel[1] + vel_change[1])
 
-        # TODO add velocity constraints
+        if new_vel[0] > 4 or new_vel[0] < 0 or new_vel[1] > 4 or new_vel[1] < 0:
+            print("Exceeded Velocity limits")
+            return self.agent.vel
 
         return new_vel
 
