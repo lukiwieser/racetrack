@@ -79,7 +79,7 @@ class Game:
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
-            return self.agent.pos                      # TODO maybe send car back to start, instead of keeping the current position?
+            return self.get_start_cells()[0]   # TODO randomize position?
 
         # if is has not returned yet, the position is valid
         return new_pos
