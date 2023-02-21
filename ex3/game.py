@@ -2,6 +2,7 @@ import numpy as np
 from state import State
 from display import Display
 from state import State
+import random
 
 
 class Game:
@@ -10,7 +11,7 @@ class Game:
         self.visualize = visualize
 
         # initialize Agent with starting position and velocity
-        self.agent = self.Agent(self.get_start_cells()[0], (0, 0))  # TODO maybe randomize at which starting cell the agent starts
+        self.agent = self.Agent(random.choice(self.get_start_cells()), (0, 0))
 
         # initalize the visualizer
         if visualize:
@@ -79,7 +80,7 @@ class Game:
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
-            return self.get_start_cells()[0]   # TODO randomize position?
+            return random.choice(self.get_start_cells())
 
         # if is has not returned yet, the position is valid
         return new_pos
