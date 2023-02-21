@@ -2,7 +2,8 @@ from state import State
 from action import Action
 from collections import defaultdict
 from statistics import mean
-
+import numpy as np
+import random
 
 class ModelRLMC:
     def __init__(self):
@@ -22,18 +23,20 @@ class ModelRLMC:
             Action( 0, 1),
             Action( 1, 1)
         ]
-        expected_rewards = []
-        for action in action_space:
-            expected_rewards.append(self.q[(state, action)])
 
-        pass
+        expected_rewards = np.zeros(len(action_space))
+        for i, action in enumerate(action_space):
+            expected_rewards[i] = self.q.get((state, action), 0)
+
+        best_action_indices = np.flatnonzero(expected_rewards == np.max(expected_rewards))
+        best_action = action_space[random.choice(best_action_indices)]
+        return best_action
 
     def learn(self, episode: list[tuple[State, Action, int]]):
         episode_reversed = list(reversed(episode))
         g = 0
         for i, (state, action, reward) in enumerate(episode_reversed):
             g = self.gamma * g + reward
-            print(f"{i}: {state},{action},{reward} {g}")
 
             is_first_state_action_pair = True
             for _, (state_pre, action_pre, reward_pre) in enumerate(episode_reversed[i + 1::]):

@@ -1,43 +1,33 @@
 import numpy as np
 from state import State
+from state_with_racetrack import StateWithRacetrack
 from display import Display
 from state import State
-
+from action import Action
 
 class Game:
     def __init__(self, racetrack: np.ndarray, visualize = False):
         self.racetrack = racetrack
         self.visualize = visualize
 
-        # initialize Agent with starting position and velocity
-        self.agent = self.Agent(self.get_start_cells()[0], (0, 0))  # TODO maybe randomize at which starting cell the agent starts
+        self.reset()
 
         # initalize the visualizer
         if visualize:
-            state = State(self.racetrack, self.agent.pos)
+            state = StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
             self.display = Display(state)
 
-    def play_user(self):
-        """
-        This function starts the user game.
-        """
-        not_finsihed = True
 
-        while not_finsihed:
-            input_str = input("Please input the change to velocity. format: \"<y> <x>\": ")
-            input_list = input_str.split(" ")
-            input_tuple = (int(input_list[0]),int(input_list[1]))
-            self.step(input_tuple)
-            if self.is_finished():
-                not_finsihed = False
-                print("You reached the finish line!")
+    def reset(self):
+        # initialize Agent with starting position and velocity
+        self.agent = self.Agent(self.get_start_cells()[0], (0, 0))  # TODO maybe randomize at which starting cell the agent starts
 
     def is_finished(self):
         if self.agent.pos in self.get_end_cells():
             return True
         return False
 
-    def step(self, game_input: tuple[int,int]):
+    def step(self, action: Action) -> int:
         """
         TODO do
 
@@ -48,13 +38,16 @@ class Game:
         # TODO is the car allowed to drive backwards?
 
         # create new velocity. If it is valid, set the agent velocity to the new velocity
-        self.agent.vel = self.check_velocity(game_input)
+        self.agent.vel = self.check_velocity((action.x, action.y))
 
         # create new position. If it is valid, set the agent position to the new position
         self.agent.pos = self.check_pos()
 
         if self.visualize:
             self.display.update_agent(self.agent.pos)
+
+        # return reward
+        return -1
 
     def check_pos(self):
         """
@@ -79,10 +72,13 @@ class Game:
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
+            start_positions = self.get_start_cells()
+            self.agent.pos = start_positions[0]
             return self.agent.pos                      # TODO maybe send car back to start, instead of keeping the current position?
 
         # if is has not returned yet, the position is valid
         return new_pos
+
 
     def check_velocity(self, vel_change):
         """
@@ -113,7 +109,7 @@ class Game:
 
         :return: returns current state.
         """
-        return State(self.racetrack, self.agent.pos)
+        return State(self.agent.pos, self.agent.vel)
 
     def get_start_cells(self):
         """

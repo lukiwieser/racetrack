@@ -1,11 +1,11 @@
-from state import State
+from state_with_racetrack import StateWithRacetrack
 from tkinter import *
 import time
 import copy
 
 
 class Visualizer:
-    def __init__(self, state: State, boardsize=600):
+    def __init__(self, state: StateWithRacetrack, boardsize=600):
         self.state = state
         self.old_state = copy.deepcopy(state)
 
