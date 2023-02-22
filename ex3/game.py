@@ -4,6 +4,7 @@ from state_with_racetrack import StateWithRacetrack
 from display import Display
 from state import State
 from action import Action
+import random
 
 class Game:
     def __init__(self, racetrack: np.ndarray, visualize = False):
@@ -20,7 +21,7 @@ class Game:
 
     def reset(self):
         # initialize Agent with starting position and velocity
-        self.agent = self.Agent(self.get_start_cells()[0], (0, 0))  # TODO maybe randomize at which starting cell the agent starts
+        self.agent = self.Agent(random.choice(self.get_start_cells()), (0, 0))  # TODO maybe randomize at which starting cell the agent starts
 
     def is_finished(self):
         if self.agent.pos in self.get_end_cells():
@@ -61,19 +62,22 @@ class Game:
         # checking if it is out of bounds
         # car cant move out of the grid.
         if new_pos[0] >= self.racetrack.shape[0]:
+            self.agent.reset_velocity()
             new_pos = (self.racetrack.shape[0]-1, new_pos[1])
         if new_pos[0] < 0:
+            self.agent.reset_velocity()
             new_pos = (0, new_pos[1])
         if new_pos[1] >= self.racetrack.shape[1]:
+            self.agent.reset_velocity()
             new_pos = (new_pos[0], self.racetrack.shape[1]-1)
         if new_pos[1] < 0:
+            self.agent.reset_velocity()
             new_pos = (new_pos[0], 0)
 
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
-            start_positions = self.get_start_cells()
-            self.agent.pos = start_positions[0]
+            self.agent.pos = random.choice(self.get_start_cells())
             return self.agent.pos                      # TODO maybe send car back to start, instead of keeping the current position?
 
         # if is has not returned yet, the position is valid
@@ -96,9 +100,16 @@ class Game:
 
         new_vel = (self.agent.vel[0] + vel_change[0], self.agent.vel[1] + vel_change[1])
 
+        # velocity cant be 0
+        if new_vel[0] == 0 and new_vel[1] == 0:
+            return (1, 0)
+
         # checks if velocity is >= 0 and < 5
         if new_vel[0] > 4 or new_vel[0] < 0 or new_vel[1] > 4 or new_vel[1] < 0:
-            print("Exceeded Velocity limits")
+            # print("Exceeded Velocity limits")
+            # velocity cant be 0
+            if self.agent.vel[0] == 0 and self.agent.vel[1] == 0:
+                return (1, 0)
             return self.agent.vel
 
         return new_vel
@@ -152,5 +163,5 @@ class Game:
             self.vel = new_vel
 
         def reset_velocity(self):
-            print("reset velocity")
+            # print("reset velocity")
             self.vel = (0, 0)
