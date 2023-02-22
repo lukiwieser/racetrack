@@ -10,33 +10,14 @@ import random
 
 def play_user():
     map = np.zeros(shape=(50, 50))
-    map[:35, 24] = 1
-    map[:35, 25] = 1
-    map[:35, 26] = 1
-    map[:35, 27] = 1
-    map[:35, 28] = 1
-    map[:35, 29] = 1
+    map[:35, 19:29] = 1
 
-    map[29, 1:24] = 1
-    map[30, 1:24] = 1
-    map[31, 1:24] = 1
-    map[32, 1:24] = 1
-    map[33, 1:24] = 1
-    map[34, 1:24] = 1
+    map[19:35, 1:24] = 1
 
-    map[29, 0] = 3
-    map[30, 0] = 3
-    map[31, 0] = 3
-    map[32, 0] = 3
-    map[33, 0] = 3
-    map[34, 0] = 3
 
-    map[0, 24] = 2
-    map[0, 25] = 2
-    map[0, 26] = 2
-    map[0, 27] = 2
-    map[0, 28] = 2
-    map[0, 29] = 2
+    map[19:35, 0] = 3
+
+    map[0, 19:29] = 2
 
     g = Game(racetrack=map, visualize=True)
 
@@ -70,33 +51,14 @@ def train_ai():
     # map[0, 9] = 2
 
     map = np.zeros(shape=(50, 50))
-    map[:35, 24] = 1
-    map[:35, 25] = 1
-    map[:35, 26] = 1
-    map[:35, 27] = 1
-    map[:35, 28] = 1
-    map[:35, 29] = 1
+    map[:35, 19:29] = 1
 
-    map[29, 1:24] = 1
-    map[30, 1:24] = 1
-    map[31, 1:24] = 1
-    map[32, 1:24] = 1
-    map[33, 1:24] = 1
-    map[34, 1:24] = 1
+    map[19:35, 1:24] = 1
 
-    map[29, 0] = 3
-    map[30, 0] = 3
-    map[31, 0] = 3
-    map[32, 0] = 3
-    map[33, 0] = 3
-    map[34, 0] = 3
 
-    map[0, 24] = 2
-    map[0, 25] = 2
-    map[0, 26] = 2
-    map[0, 27] = 2
-    map[0, 28] = 2
-    map[0, 29] = 2
+    map[19:35, 0] = 3
+
+    map[0, 19:29] = 2
 
     game = Game(racetrack=map, visualize=False)
     model = ModelRLMC()
