@@ -84,7 +84,7 @@ def train_ai():
         game.step(action)
         print(f"action: {action}, pos: {game.get_state().agent_position}, vel: {game.get_state().agent_velocity}")
         n_steps += 1
-        time.sleep(1)
+        time.sleep(0.5)
 
 
 
