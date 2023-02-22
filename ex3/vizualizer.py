@@ -48,7 +48,7 @@ class Visualizer:
                 cell_size = boardsize / input_array.shape[0]
                 color = self.get_color(input_array[i][j])
                 x1 = j * cell_size
-                y1 = i * cell_size
+                y1 = (input_array.shape[0]-1) * cell_size - i * cell_size
                 x2 = x1 + cell_size
                 y2 = y1 + cell_size
                 input_array[i][j] = self.canvas.create_rectangle(x1, y1, x2, y2, fill=color)

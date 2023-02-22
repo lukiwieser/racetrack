@@ -57,7 +57,7 @@ class Game:
 
         :return: Returns new position if it is valid, else it returns the old one
         """
-        new_pos = (self.agent.pos[0] + self.agent.vel[0], self.agent.pos[1] - self.agent.vel[1]) # self.agent.pos[1] + self.agent.vel[1]
+        new_pos = (self.agent.pos[0] + self.agent.vel[0], self.agent.pos[1] + self.agent.vel[1]) # self.agent.pos[1] + self.agent.vel[1]
 
         # checking if it is out of bounds
         # car cant move out of the grid.
@@ -82,7 +82,6 @@ class Game:
 
         # if is has not returned yet, the position is valid
         return new_pos
-
 
     def check_velocity(self, vel_change):
         """
