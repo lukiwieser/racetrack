@@ -1,13 +1,12 @@
 from model import ModelRLMC
 from state import State
 from action import Action
-import numpy as np
-import random
-
-#random.seed(42)
 
 
+from generator import Generator
 
+g = Generator(random_state=None)
+g.generate_racetrack(size=50, n_edges=2, kernel_size=7)
 
 
 def asdf2():
@@ -51,5 +50,3 @@ def asdf():
 
     for k, v in sorted(m.q.items()):
         print(f"{k} {v}")
-
-asdf2()

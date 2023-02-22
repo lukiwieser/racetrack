@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class Cell(Enum):
-    INVALID = 0
-    VALID = 1
-    VALID_START = 2
-    VALID_END = 3
+    OFF_TRACK = 0
+    ON_TRACK = 1
+    START = 2
+    END = 3
 
