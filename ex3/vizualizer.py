@@ -8,6 +8,7 @@ class Visualizer:
     def __init__(self, state: StateWithRacetrack, boardsize=600):
         self.state = state
         self.old_state = copy.deepcopy(state)
+        self.back_up_map = copy.deepcopy(state.racetrack)
 
         # initiate the gameboard
         self.init_board(boardsize)
@@ -83,7 +84,8 @@ class Visualizer:
         """
 
         # reset color of old posiiton
-        # self.change_color(self.board[self.old_state.agent_position[0]][self.old_state.agent_position[1]], "black")
+        old_color = self.get_color(self.back_up_map[self.old_state.agent_position[0]][self.old_state.agent_position[1]])
+        self.change_color(self.board[self.old_state.agent_position[0]][self.old_state.agent_position[1]], old_color)
 
         # color new position correct
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
