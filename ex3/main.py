@@ -10,14 +10,19 @@ import random
 
 def play_user():
     map = np.zeros(shape=(50, 50))
+
+    # map 2
     map[:35, 19:29] = 1
-
-    map[19:35, 1:24] = 1
-
-
-    map[19:35, 0] = 3
-
+    map[19:35, 19:44] = 1
+    map[35:49, 35:44] = 1
+    map[49, 35:44] = 3
     map[0, 19:29] = 2
+
+    # map 1
+    # map[:35, 19:29] = 1
+    # map[19:35, 19:49] = 1
+    # map[19:35, 49] = 3
+    # map[0, 19:29] = 2
 
     g = Game(racetrack=map, visualize=True)
 
@@ -30,35 +35,21 @@ def play_user():
     print("You reached the finish line!")
 
 def train_ai():
-    # map = np.zeros(shape=(50, 50))
-    # map[:, 4] = 1
-    # map[:, 5] = 1
-    # map[:, 6] = 1
-    # map[:, 7] = 1
-    # map[:, 8] = 1
-    # map[:, 9] = 1
-    # map[49, 4] = 3
-    # map[49, 5] = 3
-    # map[49, 6] = 3
-    # map[49, 7] = 3
-    # map[49, 8] = 3
-    # map[49, 9] = 3
-    # map[0, 4] = 2
-    # map[0, 5] = 2
-    # map[0, 6] = 2
-    # map[0, 7] = 2
-    # map[0, 8] = 2
-    # map[0, 9] = 2
 
     map = np.zeros(shape=(50, 50))
+
+    # map 2
     map[:35, 19:29] = 1
-
-    map[19:35, 1:24] = 1
-
-
-    map[19:35, 0] = 3
-
+    map[19:35, 19:44] = 1
+    map[35:49, 35:44] = 1
+    map[49, 35:44] = 3
     map[0, 19:29] = 2
+
+    # # map 1
+    # map[:35, 19:29] = 1
+    # map[19:35, 19:49] = 1
+    # map[19:35, 49] = 3
+    # map[0, 19:29] = 2
 
     game = Game(racetrack=map, visualize=False)
     model = ModelRLMC()
