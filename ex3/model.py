@@ -1,27 +1,27 @@
 from state import State
 from action import Action
 from collections import defaultdict
-from statistics import mean
 import numpy as np
 import random
+
 
 class ModelRLMC:
     def __init__(self):
         self.gamma = 0.9
-        self.q: dict[tuple[State, Action], int] = {}  # expected return for given state-action-pair
-        self.returns: defaultdict[tuple[State, Action], list[int]] = defaultdict(list)
+        self.q: dict[tuple[State, Action], float] = defaultdict(float)  # expected return for given state-action-pair
+        self.q_counts: dict[tuple[State, Action], int] = defaultdict(int)
 
     def determine_action(self, state: State) -> Action:
         action_space = [
-            Action(-1,-1),
-            Action( 0,-1),
-            Action( 1,-1),
+            Action(-1, -1),
+            Action(0, -1),
+            Action(1, -1),
             Action(-1, 0),
-            Action( 0, 0),
-            Action( 1, 0),
+            Action(0, 0),
+            Action(1, 0),
             Action(-1, 1),
-            Action( 0, 1),
-            Action( 1, 1)
+            Action(0, 1),
+            Action(1, 1)
         ]
 
         expected_rewards = np.zeros(len(action_space))
@@ -44,5 +44,7 @@ class ModelRLMC:
                     is_first_state_action_pair = False
 
             if is_first_state_action_pair:
-                self.returns[(state, action)].append(g)
-                self.q[(state, action)] = mean(self.returns[(state, action)])
+                n = self.q_counts[(state, action)]
+                q = self.q[(state, action)]
+                self.q[(state, action)] = (q * n + g) / (n + 1)
+                self.q_counts[(state, action)] = n + 1

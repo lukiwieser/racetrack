@@ -6,7 +6,7 @@ from state import State
 import time
 
 import random
-#random.seed(42)
+random.seed(42)
 
 def play_user():
     map = np.zeros(shape=(50, 50))
@@ -54,6 +54,7 @@ def train_ai():
     game = Game(racetrack=map, visualize=False)
     model = ModelRLMC()
 
+    start = time.time()
     for i in range(0, 3000):
         episode: list[tuple[State, Action, int]] = []
         n_steps = 0
@@ -67,6 +68,8 @@ def train_ai():
             print(str(n_steps) + " " + str(i))
         model.learn(episode)
         game.reset()
+    end = time.time()
+    print(f"train time: {end - start}")
 
     #for k, v in sorted(model.q.items()):
     #    print(f"{k} {v}")
