@@ -83,7 +83,7 @@ class Visualizer:
         """
 
         # reset color of old posiiton
-        self.change_color(self.board[self.old_state.agent_position[0]][self.old_state.agent_position[1]], "black")
+        # self.change_color(self.board[self.old_state.agent_position[0]][self.old_state.agent_position[1]], "black")
 
         # color new position correct
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
