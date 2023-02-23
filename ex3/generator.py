@@ -135,8 +135,4 @@ class Generator:
         race_field[np.where(labeled[1] == start_id)] = 2
         race_field[np.where(labeled[1] == end_id)] = 3
 
-        cv2.imshow("hello", img_dilation * 250)
-        cv2.imshow("hello2", race_field * 100)
-        cv2.waitKey(20000)
-
         return race_field
