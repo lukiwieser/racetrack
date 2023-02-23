@@ -71,15 +71,27 @@ class Game:
         if new_pos[0] >= self.racetrack.shape[0]:
             self.agent.reset_velocity()
             new_pos = (self.racetrack.shape[0]-1, new_pos[1])
+            if self.racetrack[new_pos[0]][new_pos[1]] != 3:
+                self.reset()
+                return self.agent.pos
         if new_pos[0] < 0:
             self.agent.reset_velocity()
             new_pos = (0, new_pos[1])
+            if self.racetrack[new_pos[0]][new_pos[1]] != 3:
+                self.reset()
+                return self.agent.pos
         if new_pos[1] >= self.racetrack.shape[1]:
             self.agent.reset_velocity()
             new_pos = (new_pos[0], self.racetrack.shape[1]-1)
+            if self.racetrack[new_pos[0]][new_pos[1]] != 3:
+                self.reset()
+                return self.agent.pos
         if new_pos[1] < 0:
             self.agent.reset_velocity()
             new_pos = (new_pos[0], 0)
+            if self.racetrack[new_pos[0]][new_pos[1]] != 3:
+                self.reset()
+                return self.agent.pos
 
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
