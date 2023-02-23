@@ -5,6 +5,8 @@ from action import Action
 from state import State
 import racetrack_list as rlist
 import time
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 import random
 
@@ -22,7 +24,6 @@ def play_user():
         g.step(action)
 
     print("You reached the finish line!")
-
 
 def train_ai():
     track = rlist.get_track1()
@@ -43,14 +44,19 @@ def train_ai():
             print(str(n_steps) + " " + str(i))
         model.learn(episode)
         game.reset()
+        steps_per_game.append((i, n_steps))
+        total_reward = get_reward_of_episode(episode)
+        rewards_per_game.append((i,total_reward))
     end = time.time()
     print(f"train time: {end - start}")
+
+
 
     # for k, v in sorted(model.q.items()):
     #    print(f"{k} {v}")
 
     # play
-    game = Game(racetrack=map, visualize=True)
+    game = Game(racetrack=track, visualize=True)
     n_steps = 0
     while not game.is_finished() and n_steps < 1000:
         print(f"ai plays step {n_steps}")
@@ -62,5 +68,5 @@ def train_ai():
         time.sleep(0.5)
 
 
-# train_ai()
-play_user()
+train_ai()
+# play_user()
