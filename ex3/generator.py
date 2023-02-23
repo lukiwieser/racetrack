@@ -13,6 +13,16 @@ class Generator:
     def __init__(self, random_state: int | None):
         self.rnd = Random(random_state)
 
+    def generate_racetrack_safely(self, size: int, n_edges: int, kernel_size: int) -> np.ndarray:
+        for i in range(0, 10):
+            track = self.generate_racetrack(size, n_edges, kernel_size)
+            start_cells = np.where(track == 2)[0]
+            end_cells = np.where(track == 3)[0]
+
+            if len(start_cells) > 0 and len(end_cells) > 0:
+                return track
+        return None
+
     def generate_racetrack(self, size: int, n_edges: int, kernel_size: int) -> np.ndarray:
         """
         Generates a random racetrack.
