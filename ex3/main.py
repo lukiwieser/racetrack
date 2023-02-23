@@ -3,28 +3,17 @@ import numpy as np
 from model import ModelRLMC
 from action import Action
 from state import State
+import racetrack_list as rlist
 import time
 
 import random
+
 random.seed(42)
 
+
 def play_user():
-    map = np.zeros(shape=(50, 50))
-
-    # map 2
-    map[:35, 19:29] = 1
-    map[19:35, 19:44] = 1
-    map[35:49, 35:44] = 1
-    map[49, 35:44] = 3
-    map[0, 19:29] = 2
-
-    # map 1
-    # map[:35, 19:29] = 1
-    # map[19:35, 19:49] = 1
-    # map[19:35, 49] = 3
-    # map[0, 19:29] = 2
-
-    g = Game(racetrack=map, visualize=True)
+    track = rlist.get_track1()
+    g = Game(racetrack=track, visualize=True)
 
     while not g.is_finished():
         input_str = input("Please input the change to velocity. format: \"<y> <x>\": ")
@@ -34,24 +23,10 @@ def play_user():
 
     print("You reached the finish line!")
 
+
 def train_ai():
-
-    map = np.zeros(shape=(50, 50))
-
-    # map 2
-    map[:35, 19:29] = 1
-    map[19:35, 19:44] = 1
-    map[35:49, 35:44] = 1
-    map[49, 35:44] = 3
-    map[0, 19:29] = 2
-
-    # # map 1
-    # map[:35, 19:29] = 1
-    # map[19:35, 19:49] = 1
-    # map[19:35, 49] = 3
-    # map[0, 19:29] = 2
-
-    game = Game(racetrack=map, visualize=False)
+    track = rlist.get_track1()
+    game = Game(racetrack=track, visualize=False)
     model = ModelRLMC()
 
     start = time.time()
@@ -62,7 +37,7 @@ def train_ai():
             state = game.get_state()
             action = model.determine_action(state)
             reward = game.step(action)
-            episode.append((state,action,reward))
+            episode.append((state, action, reward))
             n_steps += 1
         if i % 500 == 0:
             print(str(n_steps) + " " + str(i))
@@ -71,7 +46,7 @@ def train_ai():
     end = time.time()
     print(f"train time: {end - start}")
 
-    #for k, v in sorted(model.q.items()):
+    # for k, v in sorted(model.q.items()):
     #    print(f"{k} {v}")
 
     # play
@@ -87,7 +62,5 @@ def train_ai():
         time.sleep(0.5)
 
 
-
-
-train_ai()
-# play_user()
+# train_ai()
+play_user()

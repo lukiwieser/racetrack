@@ -6,7 +6,7 @@ from action import Action
 from generator import Generator
 
 g = Generator(random_state=None)
-g.generate_racetrack(size=50, n_edges=2, kernel_size=7)
+g.generate_racetrack(size=500, n_edges=2, kernel_size=70)
 
 
 def asdf2():
