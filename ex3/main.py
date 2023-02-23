@@ -1,21 +1,17 @@
-from game import Game
 import numpy as np
+import racetrack_list as rlist
+import time
+import argparse
+from game import Game
 from model import ModelRLMC
 from action import Action
 from state import State
-import racetrack_list as rlist
-import time
 from displayEpisode import DisplayEpisode
-import argparse
-
-import random
-
-random.seed(42)
 
 
 def play_user():
     track = rlist.get_track1()
-    g = Game(racetrack=track, visualize=True)
+    g = Game(racetrack=track, visualize=True, random_state=42)
 
     while not g.is_finished():
         input_str = input("Please input the change to velocity. format: \"<y> <x>\": ")
@@ -31,7 +27,7 @@ def play_ai(playstyle_interactive = False):
     model = ModelRLMC(random_state=42)
 
     # Train Model
-    game = Game(racetrack=track, visualize=False)
+    game = Game(racetrack=track, visualize=False, random_state=42)
     start = time.time()
     for i in range(0, 3000):
         episode: list[tuple[State, Action, int]] = []
@@ -51,7 +47,7 @@ def play_ai(playstyle_interactive = False):
 
     # Evaluate Model
     if playstyle_interactive:
-        game = Game(racetrack=track, visualize=True)
+        game = Game(racetrack=track, visualize=True, random_state=42)
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
             print(f"ai plays step {n_steps}")
@@ -64,8 +60,9 @@ def play_ai(playstyle_interactive = False):
     else:
         print("plotting 3 games")
         displayEpisode = DisplayEpisode()
+        game = Game(racetrack=track, visualize=False, random_state=42)
         for _ in range(0, 3):
-            game = Game(racetrack=track, visualize=False)
+            game.reset()
             n_steps = 0
             episode: list[tuple[State, Action, int]] = []
             while not game.is_finished() and n_steps < 1000:

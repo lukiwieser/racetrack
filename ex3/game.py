@@ -1,28 +1,29 @@
 import numpy as np
-from state import State
+import copy
 from state_with_racetrack import StateWithRacetrack
 from display import Display
 from state import State
 from action import Action
-import random
-import copy
+from random import Random
+
 
 class Game:
-    def __init__(self, racetrack: np.ndarray, visualize = False):
+    def __init__(self, racetrack: np.ndarray, visualize=False, random_state: None | int = None):
+        self.rnd = Random(random_state)
         self.racetrack = racetrack
         self.visualize = visualize
 
         self.reset()
 
-        # initalize the visualizer
+        # initialize the visualizer
         if visualize:
             state = StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
             self.display = Display(state)
 
-
     def reset(self):
         # initialize Agent with starting position and velocity
-        self.agent = self.Agent(random.choice(self.get_start_cells()), (0, 0))  # TODO maybe randomize at which starting cell the agent starts
+        self.agent = self.Agent(self.rnd.choice(self.get_start_cells()),
+                                (0, 0))  # TODO maybe randomize at which starting cell the agent starts
 
     def is_finished(self):
         if self.agent.pos in self.get_end_cells():
@@ -58,25 +59,26 @@ class Game:
 
         :return: Returns new position if it is valid, else it returns the old one
         """
-        new_pos = (self.agent.pos[0] + self.agent.vel[0], self.agent.pos[1] + self.agent.vel[1]) # self.agent.pos[1] + self.agent.vel[1]
+        new_pos = (self.agent.pos[0] + self.agent.vel[0],
+                   self.agent.pos[1] + self.agent.vel[1])  # self.agent.pos[1] + self.agent.vel[1]
 
         # reset if it cuts corners
         if self.check_intersect(self.agent.pos, new_pos):
             self.agent.reset_velocity()
-            self.agent.pos = random.choice(self.get_start_cells())
+            self.agent.pos = self.rnd.choice(self.get_start_cells())
             return self.agent.pos
 
         # checking if it is out of bounds
         # car cant move out of the grid.
         if new_pos[0] >= self.racetrack.shape[0]:
             self.agent.reset_velocity()
-            new_pos = (self.racetrack.shape[0]-1, new_pos[1])
+            new_pos = (self.racetrack.shape[0] - 1, new_pos[1])
         if new_pos[0] < 0:
             self.agent.reset_velocity()
             new_pos = (0, new_pos[1])
         if new_pos[1] >= self.racetrack.shape[1]:
             self.agent.reset_velocity()
-            new_pos = (new_pos[0], self.racetrack.shape[1]-1)
+            new_pos = (new_pos[0], self.racetrack.shape[1] - 1)
         if new_pos[1] < 0:
             self.agent.reset_velocity()
             new_pos = (new_pos[0], 0)
@@ -84,8 +86,8 @@ class Game:
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
-            self.agent.pos = random.choice(self.get_start_cells())
-            return self.agent.pos                      # TODO maybe send car back to start, instead of keeping the current position?
+            self.agent.pos = self.rnd.choice(self.get_start_cells())
+            return self.agent.pos  # TODO maybe send car back to start, instead of keeping the current position?
 
         # if is has not returned yet, the position is valid
         return new_pos
@@ -98,22 +100,21 @@ class Game:
 
         while x_distance > 0 or y_distance > 0:
             if x_distance > 0:
-                x_distance-= 1
-                old_pos = (old_pos[0]+1, old_pos[1])
+                x_distance -= 1
+                old_pos = (old_pos[0] + 1, old_pos[1])
             if y_distance > 0:
-                y_distance-=1
-                old_pos = (old_pos[0], old_pos[1]+1)
+                y_distance -= 1
+                old_pos = (old_pos[0], old_pos[1] + 1)
 
             if old_pos[0] >= self.racetrack.shape[0]:
-                old_pos = (self.racetrack.shape[0]-1, old_pos[1])
+                old_pos = (self.racetrack.shape[0] - 1, old_pos[1])
             if old_pos[1] >= self.racetrack.shape[1]:
-                old_pos = old_pos[0], (self.racetrack.shape[1]-1)
+                old_pos = old_pos[0], (self.racetrack.shape[1] - 1)
 
             if self.racetrack[old_pos[0]][old_pos[1]] == 0:
                 # print("intersect")
                 return True
         return False
-
 
     def check_velocity(self, vel_change):
         """
@@ -136,7 +137,7 @@ class Game:
             return (1, 0)
 
         # checks if velocity is >= 0 and < 5
-        if new_vel[0] > 4 or new_vel[0] < 0 or new_vel[1] > 4 or new_vel[1] < 0:
+        if new_vel[0] > 4 or new_vel[0] < -4 or new_vel[1] > 4 or new_vel[1] < -4:
             # print("Exceeded Velocity limits")
             # velocity cant be 0
             if self.agent.vel[0] == 0 and self.agent.vel[1] == 0:
