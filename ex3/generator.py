@@ -145,4 +145,4 @@ class Generator:
         race_field[np.where(labeled[1] == start_id)] = 2
         race_field[np.where(labeled[1] == end_id)] = 3
 
-        return race_field
+        return race_field.astype(np.float64)
