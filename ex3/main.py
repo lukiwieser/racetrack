@@ -12,7 +12,6 @@ import random
 
 random.seed(42)
 
-
 def play_user():
     track = rlist.get_track1()
     g = Game(racetrack=track, visualize=True)
@@ -44,13 +43,8 @@ def train_ai():
             print(str(n_steps) + " " + str(i))
         model.learn(episode)
         game.reset()
-        steps_per_game.append((i, n_steps))
-        total_reward = get_reward_of_episode(episode)
-        rewards_per_game.append((i,total_reward))
     end = time.time()
     print(f"train time: {end - start}")
-
-
 
     # for k, v in sorted(model.q.items()):
     #    print(f"{k} {v}")
