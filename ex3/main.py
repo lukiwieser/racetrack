@@ -28,11 +28,10 @@ def play_user():
 
 
 def play_ai(playstyle_interactive = False):
-    track1 = rlist.get_track2()[::-1]
+    # track1 = rlist.get_track2()
     model = ModelRLMC(random_state=42)
     g = Generator(random_state=42)
-    track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7).astype(np.float64)
-    # track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)[::-1].astype(np.float64)
+    track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
 
     # Train Model
     game = Game(racetrack=track, visualize=False, random_state=42)
