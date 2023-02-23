@@ -4,6 +4,7 @@ from model import ModelRLMC
 from action import Action
 from state import State
 import time
+from displayEpisode import DisplayEpisode
 
 import random
 random.seed(42)
@@ -53,9 +54,9 @@ def train_ai():
 
     game = Game(racetrack=map, visualize=False)
     model = ModelRLMC()
-
+    displayEpisode = DisplayEpisode()
     start = time.time()
-    for i in range(0, 3000):
+    for i in range(0, 10000):
         episode: list[tuple[State, Action, int]] = []
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
@@ -66,6 +67,7 @@ def train_ai():
             n_steps += 1
         if i % 500 == 0:
             print(str(n_steps) + " " + str(i))
+            displayEpisode.displayEpisode(map, episode)
         model.learn(episode)
         game.reset()
     end = time.time()
