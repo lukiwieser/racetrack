@@ -1,2 +1,6 @@
 numpy==1.23.3
+pandas==1.4.4
+matplotlib==3.5.2
+seaborn==0.12.0
 opencv-python==4.5.5.62
+statsmodels==0.13.5
