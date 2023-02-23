@@ -49,12 +49,14 @@ class Game:
         self.agent.vel = self.check_velocity((action.x, action.y))
 
         # create new position. If it is valid, set the agent position to the new position
-        self.agent.pos = self.check_pos()
+        self.agent.pos, has_been_reset = self.check_pos()
 
         if self.visualize:
             self.display.update_agent(self.agent.pos)
 
         # return reward
+        if has_been_reset:
+            return -5
         return -1
 
     def check_pos(self):
@@ -71,7 +73,7 @@ class Game:
         if self.check_intersect(self.agent.pos, new_pos):
             self.agent.reset_velocity()
             self.agent.pos = self.rnd.choice(self.get_start_cells())
-            return self.agent.pos
+            return self.agent.pos, True
 
         # checking if it is out of bounds
         # car cant move out of the grid.
@@ -96,16 +98,16 @@ class Game:
         if outOfBound:
             if self.racetrack[new_pos[0]][new_pos[1]] != 3:
                 self.reset()
-                return self.agent.pos
+                return self.agent.pos, True
 
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
             self.agent.pos = self.rnd.choice(self.get_start_cells())
-            return self.agent.pos  # TODO maybe send car back to start, instead of keeping the current position?
+            return self.agent.pos, True # TODO maybe send car back to start, instead of keeping the current position?
 
         # if is has not returned yet, the position is valid
-        return new_pos
+        return new_pos, False
 
     def check_intersect(self, old_pos, new_pos):
         # pass
