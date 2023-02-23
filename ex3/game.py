@@ -5,6 +5,7 @@ from display import Display
 from state import State
 from action import Action
 import random
+import copy
 
 class Game:
     def __init__(self, racetrack: np.ndarray, visualize = False):
@@ -59,6 +60,12 @@ class Game:
         """
         new_pos = (self.agent.pos[0] + self.agent.vel[0], self.agent.pos[1] + self.agent.vel[1]) # self.agent.pos[1] + self.agent.vel[1]
 
+        # reset if it cuts corners
+        if self.check_intersect(self.agent.pos, new_pos):
+            self.agent.reset_velocity()
+            self.agent.pos = random.choice(self.get_start_cells())
+            return self.agent.pos
+
         # checking if it is out of bounds
         # car cant move out of the grid.
         if new_pos[0] >= self.racetrack.shape[0]:
@@ -82,6 +89,31 @@ class Game:
 
         # if is has not returned yet, the position is valid
         return new_pos
+
+    def check_intersect(self, old_pos, new_pos):
+        # pass
+        x_distance = new_pos[0] - old_pos[0]
+        y_distance = new_pos[1] - old_pos[1]
+        old_pos = copy.deepcopy(old_pos)
+
+        while x_distance > 0 or y_distance > 0:
+            if x_distance > 0:
+                x_distance-= 1
+                old_pos = (old_pos[0]+1, old_pos[1])
+            if y_distance > 0:
+                y_distance-=1
+                old_pos = (old_pos[0], old_pos[1]+1)
+
+            if old_pos[0] >= self.racetrack.shape[0]:
+                old_pos = (self.racetrack.shape[0]-1, old_pos[1])
+            if old_pos[1] >= self.racetrack.shape[1]:
+                old_pos = old_pos[0], (self.racetrack.shape[1]-1)
+
+            if self.racetrack[old_pos[0]][old_pos[1]] == 0:
+                # print("intersect")
+                return True
+        return False
+
 
     def check_velocity(self, vel_change):
         """
