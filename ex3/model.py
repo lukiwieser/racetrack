@@ -30,7 +30,7 @@ class ModelRLMC:
         if self.rnd.random() < 1-self.epsilon:
             return self.determine_best_action(state)
         else:
-            return Action(0, 0)
+            return self.determine_rnd_action()
 
     def determine_rnd_action(self) -> Action:
         return self.rnd.choice(self.action_space)

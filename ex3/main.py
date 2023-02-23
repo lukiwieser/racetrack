@@ -35,7 +35,7 @@ def play_ai(playstyle_interactive = False):
         while not game.is_finished() and n_steps < 1000:
             state = game.get_state()
             action = model.determine_epsilon_action(state)
-            reward = game.step(action)
+            reward = game.noisy_step(action)
             episode.append((state, action, reward))
             n_steps += 1
         if i % 500 == 0:
@@ -46,8 +46,9 @@ def play_ai(playstyle_interactive = False):
     print(f"train time: {end - start}")
 
     # Evaluate Model
+    # We use a different seed so that the game behaves differently
     if playstyle_interactive:
-        game = Game(racetrack=track, visualize=True, random_state=42)
+        game = Game(racetrack=track, visualize=True, random_state=43)
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
             print(f"ai plays step {n_steps}")
@@ -60,7 +61,7 @@ def play_ai(playstyle_interactive = False):
     else:
         print("plotting 3 games")
         displayEpisode = DisplayEpisode()
-        game = Game(racetrack=track, visualize=False, random_state=42)
+        game = Game(racetrack=track, visualize=False, random_state=43)
         for _ in range(0, 3):
             game.reset()
             n_steps = 0

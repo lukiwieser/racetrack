@@ -30,6 +30,11 @@ class Game:
             return True
         return False
 
+    def noisy_step(self, action: Action) -> int:
+        if self.rnd.random() >= 0.9:
+            action = Action(0,0)
+        return self.step(action)
+
     def step(self, action: Action) -> int:
         """
         TODO do
