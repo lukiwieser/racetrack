@@ -2,17 +2,19 @@ from state import State
 from action import Action
 from collections import defaultdict
 import numpy as np
-import random
+from random import Random
 
 
 class ModelRLMC:
-    def __init__(self):
+    def __init__(self, random_state: int | None):
+        self.rnd = Random(random_state)
         self.gamma = 0.9
+        self.epsilon = 0.1
+
         self.q: dict[tuple[State, Action], float] = defaultdict(float)  # expected return for given state-action-pair
         self.q_counts: dict[tuple[State, Action], int] = defaultdict(int)
 
-    def determine_action(self, state: State) -> Action:
-        action_space = [
+        self.action_space = [
             Action(-1, -1),
             Action(0, -1),
             Action(1, -1),
@@ -24,13 +26,24 @@ class ModelRLMC:
             Action(1, 1)
         ]
 
-        expected_rewards = np.zeros(len(action_space))
-        for i, action in enumerate(action_space):
-            expected_rewards[i] = self.q.get((state, action), 0)
+    def determine_epsilon_action(self, state: State) -> Action:
+        if self.rnd.random() < 1-self.epsilon:
+            return self.determine_best_action(state)
+        else:
+            return Action(0, 0)
 
+    def determine_rnd_action(self) -> Action:
+        return self.rnd.choice(self.action_space)
+
+    def determine_best_action(self, state: State) -> Action:
+        # calc expected rewards foreach action
+        expected_rewards = np.zeros(len(self.action_space))
+        for i, action in enumerate(self.action_space):
+            expected_rewards[i] = self.q.get((state, action), 0)
+        # select action with the highest expected reward
         best_action_indices = np.flatnonzero(expected_rewards == np.max(expected_rewards))
-        best_action = action_space[random.choice(best_action_indices)]
-        return best_action
+        best_action_index = self.rnd.choice(best_action_indices)
+        return self.action_space[best_action_index]
 
     def learn(self, episode: list[tuple[State, Action, int]]):
         episode_reversed = list(reversed(episode))

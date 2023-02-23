@@ -1,12 +1,17 @@
 from model import ModelRLMC
 from state import State
 from action import Action
+import random
 
+
+random.random()
 
 from generator import Generator
 
 g = Generator(random_state=None)
 g.generate_racetrack(size=500, n_edges=2, kernel_size=70)
+
+
 
 
 def asdf2():

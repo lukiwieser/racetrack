@@ -28,7 +28,7 @@ def play_user():
 
 def play_ai(playstyle_interactive = False):
     track = rlist.get_track2()
-    model = ModelRLMC()
+    model = ModelRLMC(random_state=42)
 
     # Train Model
     game = Game(racetrack=track, visualize=False)
@@ -38,7 +38,7 @@ def play_ai(playstyle_interactive = False):
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
             state = game.get_state()
-            action = model.determine_action(state)
+            action = model.determine_epsilon_action(state)
             reward = game.step(action)
             episode.append((state, action, reward))
             n_steps += 1
@@ -56,7 +56,7 @@ def play_ai(playstyle_interactive = False):
         while not game.is_finished() and n_steps < 1000:
             print(f"ai plays step {n_steps}")
             state = game.get_state()
-            action = model.determine_action(state)
+            action = model.determine_best_action(state)
             game.step(action)
             print(f"action: {action}, pos: {game.get_state().agent_position}, vel: {game.get_state().agent_velocity}")
             n_steps += 1
@@ -70,7 +70,7 @@ def play_ai(playstyle_interactive = False):
             episode: list[tuple[State, Action, int]] = []
             while not game.is_finished() and n_steps < 1000:
                 state = game.get_state()
-                action = model.determine_action(state)
+                action = model.determine_best_action(state)
                 reward = game.step(action)
                 episode.append((state, action, reward))
                 n_steps += 1
