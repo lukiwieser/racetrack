@@ -7,13 +7,18 @@ from model import ModelRLMC
 from action import Action
 from state import State
 from displayEpisode import DisplayEpisode
+from generator import Generator
 
 
 def play_user():
-    track = rlist.get_track1()
+    # track = rlist.get_track1()
+    g = Generator(random_state=42)
+    track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
+    track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)[::-1]
     g = Game(racetrack=track, visualize=True, random_state=42)
 
     while not g.is_finished():
+        print(g.get_state())
         input_str = input("Please input the change to velocity. format: \"<y> <x>\": ")
         input_list = input_str.split(" ")
         action = Action(int(input_list[0]), int(input_list[1]))
@@ -23,13 +28,16 @@ def play_user():
 
 
 def play_ai(playstyle_interactive = False):
-    track = rlist.get_track2()
+    track1 = rlist.get_track2()[::-1]
     model = ModelRLMC(random_state=42)
+    g = Generator(random_state=42)
+    track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7).astype(np.float64)
+    # track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)[::-1].astype(np.float64)
 
     # Train Model
     game = Game(racetrack=track, visualize=False, random_state=42)
     start = time.time()
-    for i in range(0, 3000):
+    for i in range(0, 10000):
         episode: list[tuple[State, Action, int]] = []
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
