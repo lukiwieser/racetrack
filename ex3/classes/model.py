@@ -11,7 +11,6 @@ class ModelRLMC:
     def __init__(self, random_state: int | None):
         self.rnd = Random(random_state)
         self.gamma = 0.9
-        self.epsilon = 0.1
 
         self.q: dict[tuple[State, Action], float] = defaultdict(float)  # expected return for given state-action-pair
         self.q_counts: dict[tuple[State, Action], int] = defaultdict(int)
@@ -28,8 +27,8 @@ class ModelRLMC:
             Action(1, 1)
         ]
 
-    def determine_epsilon_action(self, state: State) -> Action:
-        if self.rnd.random() < 1 - self.epsilon:
+    def determine_epsilon_action(self, state: State, epsilon: float) -> Action:
+        if self.rnd.random() < 1 - epsilon:
             return self.determine_best_action(state)
         else:
             return self.determine_rnd_action()
