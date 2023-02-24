@@ -4,6 +4,7 @@ from random import Random
 import numpy as np
 
 from .action import Action
+from .agent import Agent
 from .display import Display
 from .state import State
 from .state_with_racetrack import StateWithRacetrack
@@ -24,8 +25,8 @@ class Game:
 
     def reset(self):
         # initialize Agent with starting position and velocity
-        self.agent = self.Agent(self.rnd.choice(self.get_start_cells()),
-                                (0, 0))  # TODO maybe randomize at which starting cell the agent starts
+        self.agent = Agent(self.rnd.choice(self.get_start_cells()),
+                           (0, 0))  # TODO maybe randomize at which starting cell the agent starts
 
     def is_finished(self):
         if self.agent.pos in self.get_end_cells():
@@ -34,14 +35,14 @@ class Game:
 
     def noisy_step(self, action: Action) -> int:
         if self.rnd.random() >= 0.9:
-            action = Action(0,0)
+            action = Action(0, 0)
         return self.step(action)
 
     def step(self, action: Action) -> int:
         """
         TODO do
 
-        :param game_input: This represents the input of the user/agent and indicates how the velocity should be changed
+        :param action: This represents the input of the user/agent and indicates how the velocity should be changed
         :return: returns current state. # TODO finish comment
         """
         # TODO maybe introduce a limit to the velocity, like the article?
@@ -82,7 +83,7 @@ class Game:
         outOfBound = False
         if new_pos[0] >= self.racetrack.shape[0]:
             self.agent.reset_velocity()
-            new_pos = (self.racetrack.shape[0]-1, new_pos[1])
+            new_pos = (self.racetrack.shape[0] - 1, new_pos[1])
             outOfBound = True
         if new_pos[0] < 0:
             self.agent.reset_velocity()
@@ -90,7 +91,7 @@ class Game:
             outOfBound = True
         if new_pos[1] >= self.racetrack.shape[1]:
             self.agent.reset_velocity()
-            new_pos = (new_pos[0], self.racetrack.shape[1]-1)
+            new_pos = (new_pos[0], self.racetrack.shape[1] - 1)
             outOfBound = True
         if new_pos[1] < 0:
             self.agent.reset_velocity()
@@ -106,7 +107,7 @@ class Game:
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
             self.agent.pos = self.rnd.choice(self.get_start_cells())
-            return self.agent.pos, True # TODO maybe send car back to start, instead of keeping the current position?
+            return self.agent.pos, True  # TODO maybe send car back to start, instead of keeping the current position?
 
         # if is has not returned yet, the position is valid
         return new_pos, False
@@ -134,7 +135,6 @@ class Game:
                 # print("intersect")
                 return True
         return False
-
 
     def check_velocity(self, vel_change):
         """
@@ -204,16 +204,3 @@ class Game:
         for i in range(len(input_tuple[0])):
             list.append((input_tuple[0][i], input_tuple[1][i]))
         return list
-
-    class Agent:
-        def __init__(self, initial_pos, initial_vel):
-            self.pos = initial_pos
-            self.vel = initial_vel
-
-        def update_agent(self, new_pos, new_vel):
-            self.pos = new_pos
-            self.vel = new_vel
-
-        def reset_velocity(self):
-            # print("reset velocity")
-            self.vel = (0, 0)

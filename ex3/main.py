@@ -49,7 +49,7 @@ def play_ai(playstyle_interactive=False):
         model.learn(episode)
         game.reset()
     end = time.time()
-    print(f"train time: {end - start}")
+    print(f"train time: {end - start : 2.4f}")
 
     # Evaluate Model
     # We use a different seed so that the game behaves differently
@@ -83,7 +83,7 @@ def play_ai(playstyle_interactive=False):
 
 def main():
     parser = argparse.ArgumentParser("machine learning ex3")
-    parser.add_argument('-m', '--mode', help="c", choices=["user", "ai_interactive", "ai_static"], default="user")
+    parser.add_argument('-m', '--mode', help="c", choices=["user", "ai_interactive", "ai_static"], default="ai_static")
     args = parser.parse_args()
 
     mode = args.mode
