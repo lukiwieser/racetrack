@@ -1,6 +1,7 @@
-import numpy as np
 from random import Random
+
 import cv2.cv2 as cv2
+import numpy as np
 
 
 class Generator:

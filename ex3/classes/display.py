@@ -1,8 +1,10 @@
-from functools import partial
-from state_with_racetrack import StateWithRacetrack
-from vizualizer import Visualizer
-import threading
 import copy
+import threading
+from functools import partial
+
+from .state_with_racetrack import StateWithRacetrack
+from .vizualizer import Visualizer
+
 
 class Display:
     def __vis(self, state):
@@ -13,5 +15,5 @@ class Display:
         t = threading.Thread(target=partial(self.__vis, self.state))
         t.start()
 
-    def update_agent(self, new_pos: tuple[int,int]):
+    def update_agent(self, new_pos: tuple[int, int]):
         self.state.agent_position = new_pos

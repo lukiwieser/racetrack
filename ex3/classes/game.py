@@ -1,10 +1,12 @@
-import numpy as np
 import copy
-from state_with_racetrack import StateWithRacetrack
-from display import Display
-from state import State
-from action import Action
 from random import Random
+
+import numpy as np
+
+from .action import Action
+from .display import Display
+from .state import State
+from .state_with_racetrack import StateWithRacetrack
 
 
 class Game:

@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class State:
     def __init__(self, agent_position: tuple[int, int], agent_velocity: tuple[int, int]):
         # self.racetrack = racetrack

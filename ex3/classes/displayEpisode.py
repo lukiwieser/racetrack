@@ -1,8 +1,8 @@
-from functools import partial
-from state_with_racetrack import StateWithRacetrack
-from episodeVisualizer import EpisodeVisualizer
 import threading
-import copy
+from functools import partial
+
+from .episodeVisualizer import EpisodeVisualizer
+
 
 class DisplayEpisode:
     def __display(self, map, episode):
@@ -11,4 +11,3 @@ class DisplayEpisode:
     def displayEpisode(self, map, episode):
         t = threading.Thread(target=partial(self.__display, map, episode))
         t.start()
-

@@ -1,13 +1,13 @@
-import numpy as np
-import racetrack_list as rlist
-import time
 import argparse
-from game import Game
-from model import ModelRLMC
-from action import Action
-from state import State
-from displayEpisode import DisplayEpisode
-from generator import Generator
+import time
+
+from classes import racetrack_list as rlist
+from classes.action import Action
+from classes.displayEpisode import DisplayEpisode
+from classes.game import Game
+from classes.generator import Generator
+from classes.model import ModelRLMC
+from classes.state import State
 
 
 def play_user():
@@ -27,16 +27,16 @@ def play_user():
     print("You reached the finish line!")
 
 
-def play_ai(playstyle_interactive = False):
-    # track1 = rlist.get_track2()
+def play_ai(playstyle_interactive=False):
+    track = rlist.get_track2()
     model = ModelRLMC(random_state=42)
-    g = Generator(random_state=42)
-    track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
+    # g = Generator(random_state=42)
+    # track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
 
     # Train Model
     game = Game(racetrack=track, visualize=False, random_state=42)
     start = time.time()
-    for i in range(0, 10000):
+    for i in range(0, 3000):
         episode: list[tuple[State, Action, int]] = []
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
@@ -84,15 +84,18 @@ def play_ai(playstyle_interactive = False):
 
 def main():
     parser = argparse.ArgumentParser("machine learning ex3")
-    parser.add_argument('-m', '--mode', help="c", choices=["user","ai_interactive","ai_static"], default="ai_static")
+    parser.add_argument('-m', '--mode', help="c", choices=["user", "ai_interactive", "ai_static"], default="user")
     args = parser.parse_args()
 
     mode = args.mode
     print(f"{mode = }")
     match mode:
-        case "user": play_user()
-        case "ai_interactive": play_ai(playstyle_interactive=True)
-        case "ai_static": play_ai(playstyle_interactive=False)
+        case "user":
+            play_user()
+        case "ai_interactive":
+            play_ai(playstyle_interactive=True)
+        case "ai_static":
+            play_ai(playstyle_interactive=False)
 
 
 if __name__ == "__main__":

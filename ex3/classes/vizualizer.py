@@ -1,7 +1,7 @@
-from state_with_racetrack import StateWithRacetrack
-from tkinter import *
-import time
 import copy
+from tkinter import *
+
+from .state_with_racetrack import StateWithRacetrack
 
 
 class Visualizer:
@@ -49,7 +49,7 @@ class Visualizer:
                 cell_size = boardsize / input_array.shape[0]
                 color = self.get_color(input_array[i][j])
                 x1 = j * cell_size
-                y1 = (input_array.shape[0]-1) * cell_size - i * cell_size
+                y1 = (input_array.shape[0] - 1) * cell_size - i * cell_size
                 x2 = x1 + cell_size
                 y2 = y1 + cell_size
                 input_array[i][j] = self.canvas.create_rectangle(x1, y1, x2, y2, fill=color)
@@ -92,7 +92,7 @@ class Visualizer:
 
     def check_for_state_change(self):
         """
-        This methods checks if the position of the car changed and adjusts the coloring of the rectangles if it is necessary.
+        Checks if the position of the car changed and adjusts the coloring of the rectangles if it is necessary.
         After that it puts itself in the event loop again.
         """
         if self.state.agent_position == self.old_state.agent_position:

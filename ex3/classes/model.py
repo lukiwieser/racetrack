@@ -1,8 +1,10 @@
-from state import State
-from action import Action
 from collections import defaultdict
-import numpy as np
 from random import Random
+
+import numpy as np
+
+from .action import Action
+from .state import State
 
 
 class ModelRLMC:
@@ -27,7 +29,7 @@ class ModelRLMC:
         ]
 
     def determine_epsilon_action(self, state: State) -> Action:
-        if self.rnd.random() < 1-self.epsilon:
+        if self.rnd.random() < 1 - self.epsilon:
             return self.determine_best_action(state)
         else:
             return self.determine_rnd_action()
