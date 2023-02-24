@@ -14,7 +14,6 @@ def play_user():
     # track = rlist.get_track1()
     g = Generator(random_state=42)
     track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
-    track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)[::-1]
     g = Game(racetrack=track, visualize=True, random_state=42)
 
     while not g.is_finished():
