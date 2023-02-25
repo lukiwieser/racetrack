@@ -6,8 +6,8 @@ Learn how to drive on a simple racetrack by using reinforcement learning with mo
 
 The main program [main.py](main.py) has the following features:
 
-1) AI Static: train a model on one racetrack, and display 3 test runs as static images.
-2) AI Interactive: trans a model on one racetrack, and watch live as the trained model plays a game.
+1) AI Static: Train a model on one racetrack, and display 3 test runs as static images.
+2) AI Interactive: Train a model on one racetrack, and watch live as the trained model plays a game.
 3) User: Let the user play on one racetrack by applying inputs via the command line.
 
 Additionally, there is the jupyter notebook [model_analysis.ipynb](model_analysis.ipynb) to create exploratory statistics and plots.
