@@ -1,7 +1,11 @@
 class Action:
-    def __init__(self, x, y):
-        self.x = x  # increase in x velocity
-        self.y = y  # increase in y velocity
+    def __init__(self, x: int, y: int):
+        """
+        :param x: increase in x velocity
+        :param y: increase in y velocity
+        """
+        self.x = x
+        self.y = y
 
     def __eq__(self, other):
         if isinstance(other, Action):

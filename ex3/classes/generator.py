@@ -5,16 +5,23 @@ import numpy as np
 
 
 class Generator:
-    """
-    Generator for generating random racetracks.
-
-    :param random_state: Used for generating the randomness of the racetrack. Pass an int for reproducible output across multiple function calls
-    """
-
     def __init__(self, random_state: int | None):
+        """
+        Generator for generating random racetracks.
+
+        :param random_state: Used for generating the randomness of the racetrack. Pass an int for reproducible output across multiple function calls
+        """
         self.rnd = Random(random_state)
 
     def generate_racetrack_safely(self, size: int, n_edges: int, kernel_size: int) -> np.ndarray:
+        """
+        Generate a random racetrack. Guarantees that the racetrack will have Start and Finish cells.
+
+        :param size: specifies the size of the whole racetrack in x and y direction (square)
+        :param n_edges: number of edges the racetrack should have
+        :param kernel_size: basically specifies the size of the track iseven
+        :return: Returns a 2d numpy array, where each element represents a cell of the racetrack. The first dimension is the row, the second is the colum.
+        """
         for i in range(0, 10):
             track = self.generate_racetrack(size, n_edges, kernel_size)
             start_cells = np.where(track == 2)[0]
@@ -26,9 +33,12 @@ class Generator:
 
     def generate_racetrack(self, size: int, n_edges: int, kernel_size: int) -> np.ndarray:
         """
-        Generates a random racetrack.
+        Generate a random racetrack.
 
-        :return:  Returns a 2d numpy array, where each element represents a cell of the racetrack. The first dimension is the row, the second is the colum.
+        :param size: specifies the size of the whole racetrack in x and y direction (square)
+        :param n_edges: number of edges the racetrack should have
+        :param kernel_size: basically specifies the size of the track iseven
+        :return: Returns a 2d numpy array, where each element represents a cell of the racetrack. The first dimension is the row, the second is the colum.
         """
 
         def dis(p1, p2):

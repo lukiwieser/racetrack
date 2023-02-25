@@ -9,6 +9,11 @@ from .state import State
 
 class ModelRLMC:
     def __init__(self, random_state: int | None):
+        """
+        Reinforcement Learning Model using Monte Carlo Control
+
+        :param random_state: Used for generating the randomness of the racetrack. Pass an int for reproducible output across multiple function calls
+        """
         self.rnd = Random(random_state)
         self.gamma = 0.9
 
@@ -28,15 +33,24 @@ class ModelRLMC:
         ]
 
     def determine_epsilon_action(self, state: State, epsilon: float) -> Action:
+        """
+        Returns the best action with probability 1-epsilon, otherwise a random action.
+        """
         if self.rnd.random() < 1 - epsilon:
             return self.determine_best_action(state)
         else:
             return self.determine_rnd_action()
 
     def determine_rnd_action(self) -> Action:
+        """
+        Returns a random action
+        """
         return self.rnd.choice(self.action_space)
 
     def determine_best_action(self, state: State) -> Action:
+        """
+        Returns the best action for a given state
+        """
         # calc expected rewards foreach action
         expected_rewards = np.zeros(len(self.action_space))
         for i, action in enumerate(self.action_space):
@@ -46,7 +60,10 @@ class ModelRLMC:
         best_action_index = self.rnd.choice(best_action_indices)
         return self.action_space[best_action_index]
 
-    def learn(self, episode: list[tuple[State, Action, int]]):
+    def learn(self, episode: list[tuple[State, Action, int]]) -> None:
+        """
+        Learn from a given episode
+        """
         episode_reversed = list(reversed(episode))
         g = 0
         for i, (state, action, reward) in enumerate(episode_reversed):

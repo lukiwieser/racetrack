@@ -12,6 +12,12 @@ from .state_with_racetrack import StateWithRacetrack
 
 class Game:
     def __init__(self, racetrack: np.ndarray, visualize=False, random_state: None | int = None):
+        """
+        Capsules all the game logic. Mainly contains the Environment and Agent.
+        :param racetrack: the racetrack on which the game should be played
+        :param visualize: if the game should be visualized live when being played
+        :param random_state: Used for generating the randomness of the racetrack. Pass an int for reproducible output across multiple function calls
+        """
         self.rnd = Random(random_state)
         self.racetrack = racetrack
         self.visualize = visualize
@@ -34,16 +40,22 @@ class Game:
         return False
 
     def noisy_step(self, action: Action) -> int:
+        """
+        Applies the specified action to the environment. With certain probability the action is ignored (= noise).
+
+        :param action: indicates how the velocity should be changed
+        :return: returns a reward
+        """
         if self.rnd.random() >= 0.9:
             action = Action(0, 0)
         return self.step(action)
 
     def step(self, action: Action) -> int:
         """
-        TODO do
+        Applies the specified action to the environment.
 
-        :param action: This represents the input of the user/agent and indicates how the velocity should be changed
-        :return: returns current state. # TODO finish comment
+        :param action: indicates how the velocity should be changed
+        :return: returns a reward
         """
         # TODO maybe introduce a limit to the velocity, like the article?
         # TODO is the car allowed to drive backwards?
