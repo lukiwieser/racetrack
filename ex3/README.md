@@ -30,4 +30,11 @@ When running the main program certain aspects can be selected by setting the mod
 python main.py -m ai_interactive
 ```
 
+## Further Information
 
+The racetrack is internally represented by a 2 dimensional numpy array. 
+The elements of this array are integers, and specify the type of the cell:
+- 0 = OFF_TRACK
+- 1 = ON_TRACK
+- 2 = START
+- 3 = END/FINISH
