@@ -8,9 +8,9 @@ The main program [main.py](main.py) has the following features:
 
 1) AI Static: train a model on one racetrack, and display 3 test runs as static images.
 2) AI Interactive: trans a model on one racetrack, and watch live as the trained model plays a game.
-3) User: Let the user play on one racetrack by applying inputs via the comandline
+3) User: Let the user play on one racetrack by applying inputs via the command line.
 
-Additionally, there is the jupyter notebook [analyze_model.ipynb](analyze_model.ipynb) to create exploratorive statistics and plots.
+Additionally, there is the jupyter notebook [model_analysis.ipynb](model_analysis.ipynb) to create exploratory statistics and plots.
 
 ## Usage
 
@@ -22,7 +22,7 @@ First install the python dependencies with:
 pip install -r requirements.txt
 ```
 
-Now simply run `main.py` or `analyze_model.ipynb`.
+Now simply run `main.py` or `model_analysis.ipynb`.
 
 When running the main program certain aspects can be selected by setting the mode flag:
 
