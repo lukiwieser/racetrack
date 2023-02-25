@@ -14,14 +14,14 @@ def play_user():
     # track = rlist.get_track1()
     g = Generator(random_state=42)
     track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
-    g = Game(racetrack=track, visualize=True, random_state=42)
+    game = Game(racetrack=track, visualize=True, random_state=42)
 
-    while not g.is_finished():
-        print(g.get_state())
+    while not game.is_finished():
+        print(game.get_state())
         input_str = input("Please input the change to velocity. format: \"<y> <x>\": ")
         input_list = input_str.split(" ")
         action = Action(int(input_list[0]), int(input_list[1]))
-        g.step(action)
+        game.step(action)
 
     print("You reached the finish line!")
 
