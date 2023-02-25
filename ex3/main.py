@@ -10,7 +10,11 @@ from classes.model import ModelRLMC
 from classes.state import State
 
 
-def play_user():
+def play_user() -> None:
+    """
+    Let the user play a game on a racetrack
+    """
+
     # track = rlist.get_track1()
     g = Generator(random_state=42)
     track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
@@ -26,7 +30,13 @@ def play_user():
     print("You reached the finish line!")
 
 
-def play_ai(playstyle_interactive=False):
+def play_ai(playstyle_interactive=False) -> None:
+    """
+    Train a AI on a racetrack, and then watch it play.
+
+    :param playstyle_interactive: if the game the AI plays should be shown life (aka interactively), or if the whole game should be shown in one static image (not interactively)
+    """
+
     track = rlist.get_track2()
     model = ModelRLMC(random_state=42)
     # g = Generator(random_state=42)
@@ -83,7 +93,7 @@ def play_ai(playstyle_interactive=False):
 
 def main():
     parser = argparse.ArgumentParser("machine learning ex3")
-    parser.add_argument('-m', '--mode', help="c", choices=["user", "ai_interactive", "ai_static"], default="user")
+    parser.add_argument('-m', '--mode', help="c", choices=["user", "ai_interactive", "ai_static"], default="ai_static")
     args = parser.parse_args()
 
     mode = args.mode
