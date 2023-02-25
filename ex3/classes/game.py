@@ -5,7 +5,7 @@ import numpy as np
 
 from .action import Action
 from .agent import Agent
-from .display import Display
+from .interactive_visualizer import InteractiveVisualizer
 from .state import State
 from .state_with_racetrack import StateWithRacetrack
 
@@ -14,6 +14,7 @@ class Game:
     def __init__(self, racetrack: np.ndarray, visualize=False, random_state: None | int = None):
         """
         Capsules all the game logic. Mainly contains the Environment and Agent.
+
         :param racetrack: the racetrack on which the game should be played
         :param visualize: if the game should be visualized live when being played
         :param random_state: Used for generating the randomness of the racetrack. Pass an int for reproducible output across multiple function calls
@@ -27,12 +28,11 @@ class Game:
         # initialize the visualizer
         if visualize:
             state = StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
-            self.display = Display(state)
+            self.visualizer = InteractiveVisualizer(state)
 
     def reset(self):
         # initialize Agent with starting position and velocity
-        self.agent = Agent(self.rnd.choice(self.get_start_cells()),
-                           (0, 0))  # TODO maybe randomize at which starting cell the agent starts
+        self.agent = Agent(self.rnd.choice(self.get_start_cells()), (0, 0))
 
     def is_finished(self):
         if self.agent.pos in self.get_end_cells():
@@ -57,8 +57,6 @@ class Game:
         :param action: indicates how the velocity should be changed
         :return: returns a reward
         """
-        # TODO maybe introduce a limit to the velocity, like the article?
-        # TODO is the car allowed to drive backwards?
 
         # create new velocity. If it is valid, set the agent velocity to the new velocity
         self.agent.vel = self.check_velocity((action.x, action.y))
@@ -67,7 +65,7 @@ class Game:
         self.agent.pos, has_been_reset = self.check_pos()
 
         if self.visualize:
-            self.display.update_agent(self.agent.pos)
+            self.visualizer.update_agent(self.agent.pos)
 
         # return reward
         if has_been_reset:
@@ -91,7 +89,7 @@ class Game:
             return self.agent.pos, True
 
         # checking if it is out of bounds
-        # car cant move out of the grid.
+        # car can't move out of the grid.
         outOfBound = False
         if new_pos[0] >= self.racetrack.shape[0]:
             self.agent.reset_velocity()
@@ -159,7 +157,7 @@ class Game:
         # checks if velocity is not changed by more than +-1
         allowed = [-1, 0, 1]
         if vel_change[0] not in allowed or vel_change[1] not in allowed:
-            print("Cannot modify velicity by more then +-1")
+            print("Cannot modify velocity by more then +-1")
             return self.agent.vel
 
         new_vel = (self.agent.vel[0] + vel_change[0], self.agent.vel[1] + vel_change[1])
@@ -190,7 +188,7 @@ class Game:
         """
         Finds all start rectangles.
 
-        :return: Returns all starting reactangles as a list of tuples, where each tuple represents one rectangle
+        :return: Returns all starting cells as a list of tuples, where each tuple represents one cell
         """
         start_array = np.where(self.racetrack == 2)
         return self.convert(start_array)
@@ -199,7 +197,7 @@ class Game:
         """
         Finds all end rectangles.
 
-        :return: Returns all end reactangles as a list of tuples, where each tuple represents one rectangle
+        :return: Returns all end cells as a list of tuples, where each tuple represents one cell
         """
         end_array = np.where(self.racetrack == 3)
         return self.convert(end_array)
@@ -209,7 +207,7 @@ class Game:
         Converts a tuple of 2 ndarrays to a list of tuples. This is a help function to find start/end rectangles.
         E.g. Input ([0,0,0],[4,5,6]) --> Output [(0,4),(0,5),(0,6)], where each tuple is one rectangle
 
-        :param input_tuple: the tupl
+        :param input_tuple: the tuple
         :return: Returns a list of tuples, where each tuple represents a rectangle
         """
         list = []

@@ -1,10 +1,29 @@
 import copy
+import threading
+from functools import partial
 from tkinter import *
 
 from .state_with_racetrack import StateWithRacetrack
 
 
-class Visualizer:
+class InteractiveVisualizer:
+    """
+    Visualizing a game as a dynamic image.
+    If the state of the game changes the visualization also changes dynamically.
+    """
+    def __vis(self, state):
+        vis = InteractiveVisualizerIntern(state)
+
+    def __init__(self, state: StateWithRacetrack):
+        self.state = copy.deepcopy(state)
+        t = threading.Thread(target=partial(self.__vis, self.state))
+        t.start()
+
+    def update_agent(self, new_pos: tuple[int, int]) -> None:
+        self.state.agent_position = new_pos
+
+
+class InteractiveVisualizerIntern:
     def __init__(self, state: StateWithRacetrack, boardsize=600):
         self.state = state
         self.old_state = copy.deepcopy(state)

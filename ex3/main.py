@@ -3,7 +3,7 @@ import time
 
 from classes import racetrack_list as rlist
 from classes.action import Action
-from classes.displayEpisode import DisplayEpisode
+from classes.episode_visualizer import EpisodeVisualizer
 from classes.game import Game
 from classes.generator import Generator
 from classes.model import ModelRLMC
@@ -40,7 +40,7 @@ def play_ai(playstyle_interactive=False):
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
             state = game.get_state()
-            action = model.determine_epsilon_action(state)
+            action = model.determine_epsilon_action(state, 0.1)
             reward = game.noisy_step(action)
             episode.append((state, action, reward))
             n_steps += 1
@@ -66,7 +66,7 @@ def play_ai(playstyle_interactive=False):
             time.sleep(0.5)
     else:
         print("plotting 3 games")
-        displayEpisode = DisplayEpisode()
+        visualizer = EpisodeVisualizer()
         game = Game(racetrack=track, visualize=False, random_state=43)
         for _ in range(0, 3):
             game.reset()
@@ -78,12 +78,12 @@ def play_ai(playstyle_interactive=False):
                 reward = game.step(action)
                 episode.append((state, action, reward))
                 n_steps += 1
-            displayEpisode.displayEpisode(track, episode)
+            visualizer.visualize_episode(track, episode)
 
 
 def main():
     parser = argparse.ArgumentParser("machine learning ex3")
-    parser.add_argument('-m', '--mode', help="c", choices=["user", "ai_interactive", "ai_static"], default="ai_static")
+    parser.add_argument('-m', '--mode', help="c", choices=["user", "ai_interactive", "ai_static"], default="user")
     args = parser.parse_args()
 
     mode = args.mode

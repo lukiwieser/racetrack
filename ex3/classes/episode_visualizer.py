@@ -1,8 +1,23 @@
 import copy
+import threading
+from functools import partial
 from tkinter import *
 
 
 class EpisodeVisualizer:
+    """
+    Visualizing one game as a static image.
+    The game is given by a single episode.
+    """
+    def __vis(self, map, episode):
+        vis = EpisodeVisualizerIntern(map, episode)
+
+    def visualize_episode(self, map, episode):
+        t = threading.Thread(target=partial(self.__vis, map, episode))
+        t.start()
+
+
+class EpisodeVisualizerIntern:
     def __init__(self, map, episode, boardsize=600):
         self.map = copy.deepcopy(map)
         self.episode = copy.deepcopy(episode)
@@ -45,7 +60,6 @@ class EpisodeVisualizer:
     def create_board(self, input_array, boardsize):
         """
         Converts the initial ndarray-2d array into a grid of rectangles.
-
         Assumption: the input array has the structure NxN
 
         :param input_array: Initial racecourse
