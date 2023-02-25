@@ -69,6 +69,7 @@ class ModelRLMC:
         for i, (state, action, reward) in enumerate(episode_reversed):
             g = self.gamma * g + reward
 
+            # TODO faster check if first-state-action pair
             is_first_state_action_pair = True
             for _, (state_pre, action_pre, reward_pre) in enumerate(episode_reversed[i + 1::]):
                 if state == state_pre and action == action_pre:
