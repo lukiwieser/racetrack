@@ -46,53 +46,45 @@ class Generator:
 
         size_of_land = size
         land = np.zeros((size_of_land, size_of_land), np.uint8)
-        race_field = np.zeros((size_of_land, size_of_land), np.int8)
-        mask = np.zeros((size_of_land, size_of_land), np.uint8)
+        mask = np.zeros((size_of_land, size_of_land), np.uint8)  # used later to make start-cell to whole start-line
 
+        # randomly determine one start and one end cell
         rand_edge = ['up', 'down', 'left', 'right']
-
         rand_edge = self.rnd.sample(rand_edge, 2)
         rand_id = self.rnd.sample([0, 1], 2)
-        start_edge = []
-        end_edge = []
         if rand_edge[rand_id[0]] == 'up':
             start = [0, self.rnd.randint(0, size_of_land - 1)]
-            start_edge = 'up'
             mask[:, 0] = 1
         if rand_edge[rand_id[1]] == 'up':
             end = [0, self.rnd.randint(0, size_of_land - 1)]
-            end_edge = 'up'
             mask[:, 0] = 1
         if rand_edge[rand_id[0]] == 'down':
             start = [size_of_land - 1, self.rnd.randint(0, size_of_land - 1)]
-            start_edge = 'down'
             mask[:, size_of_land - 1] = 1
         if rand_edge[rand_id[1]] == 'down':
             end = [size_of_land - 1, self.rnd.randint(0, size_of_land - 1)]
-            end_edge = 'down'
             mask[:, size_of_land - 1] = 1
         if rand_edge[rand_id[0]] == 'left':
             start = [self.rnd.randint(0, size_of_land - 1), 0]
-            start_edge = 'left'
             mask[0, :] = 1
         if rand_edge[rand_id[1]] == 'left':
             end = [self.rnd.randint(0, size_of_land - 1), 0]
-            end_edge = 'left'
             mask[0, :] = 1
         if rand_edge[rand_id[0]] == 'right':
             start = [self.rnd.randint(0, size_of_land - 1), size_of_land - 1]
-            start_edge = 'right'
             mask[size_of_land - 1, :] = 1
         if rand_edge[rand_id[1]] == 'right':
             end = [self.rnd.randint(0, size_of_land - 1), size_of_land - 1]
-            end_edge = 'right'
             mask[size_of_land - 1, :] = 1
 
+        # determine random points
+        # these points are used to define the track between the start and finish cells
         rand_points = []
-        number_of_points = n_edges -1
+        number_of_points = n_edges - 1
         for i in range(number_of_points):
             rand_points.append([self.rnd.randint(0, size_of_land - 1), self.rnd.randint(0, size_of_land - 1)])
 
+        # find paths to connect the points together (incl start and end)
         tmp_start = start
         tmp_end = end
         id_min_dis = []
@@ -127,19 +119,22 @@ class Generator:
                 end_point_2 = rand_points[id_min_dis]
             rand_points.pop(id_min_dis)
 
-        # short_lines.append([end_point_1, end])
+        # it may happen, that after finding the lines the start and end are not at the ends of the whole track
+        # thus we set a new start/end if necessary
         if not end_point_1:
             end_point_1 = start
         if not end_point_2:
             end_point_2 = end
         short_lines.append([end_point_1, end_point_2])
 
+        # "draw" the lines
         for i in range(len(short_lines)):
             cv2.line(land, short_lines[i][0], short_lines[i][1], 1, 1)
 
         kernel = np.ones((kernel_size, kernel_size), np.uint8)
         img_dilation = cv2.dilate(land, kernel, iterations=2)
 
+        # make start and end cell to a start-line adn finish-line
         mask = mask * img_dilation
         labeled = cv2.connectedComponents(mask)
         start_id = []
