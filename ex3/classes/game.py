@@ -32,10 +32,10 @@ class Game:
 
     def reset(self):
         # initialize Agent with starting position and velocity
-        self.agent = Agent(self.rnd.choice(self.get_start_cells()), (0, 0))
+        self.agent = Agent(self.rnd.choice(self.__get_start_cells()), (0, 0))
 
     def is_finished(self):
-        if self.agent.pos in self.get_end_cells():
+        if self.agent.pos in self.__get_end_cells():
             return True
         return False
 
@@ -59,10 +59,10 @@ class Game:
         """
 
         # create new velocity. If it is valid, set the agent velocity to the new velocity
-        self.agent.vel = self.check_velocity((action.x, action.y))
+        self.agent.vel = self.__check_velocity((action.x, action.y))
 
         # create new position. If it is valid, set the agent position to the new position
-        self.agent.pos, has_been_reset = self.check_pos()
+        self.agent.pos, has_been_reset = self.__check_pos()
 
         if self.visualize:
             self.visualizer.update_agent(self.agent.pos)
@@ -72,7 +72,7 @@ class Game:
             return -5
         return -1
 
-    def check_pos(self):
+    def __check_pos(self):
         """
         Checks if the position is still valid after applying the velocity. If it is valid the new position is
         returned, else the old one is returned.
@@ -80,35 +80,35 @@ class Game:
         :return: Returns new position if it is valid, else it returns the old one
         """
         new_pos = (self.agent.pos[0] + self.agent.vel[0],
-                   self.agent.pos[1] + self.agent.vel[1])  # self.agent.pos[1] + self.agent.vel[1]
+                   self.agent.pos[1] + self.agent.vel[1])
 
         # reset if it cuts corners
-        if self.check_intersect(self.agent.pos, new_pos):
+        if self.__check_intersect(self.agent.pos, new_pos):
             self.agent.reset_velocity()
-            self.agent.pos = self.rnd.choice(self.get_start_cells())
+            self.agent.pos = self.rnd.choice(self.__get_start_cells())
             return self.agent.pos, True
 
         # checking if it is out of bounds
         # car can't move out of the grid.
-        outOfBound = False
+        out_of_bound = False
         if new_pos[0] >= self.racetrack.shape[0]:
             self.agent.reset_velocity()
             new_pos = (self.racetrack.shape[0] - 1, new_pos[1])
-            outOfBound = True
+            out_of_bound = True
         if new_pos[0] < 0:
             self.agent.reset_velocity()
             new_pos = (0, new_pos[1])
-            outOfBound = True
+            out_of_bound = True
         if new_pos[1] >= self.racetrack.shape[1]:
             self.agent.reset_velocity()
             new_pos = (new_pos[0], self.racetrack.shape[1] - 1)
-            outOfBound = True
+            out_of_bound = True
         if new_pos[1] < 0:
             self.agent.reset_velocity()
             new_pos = (new_pos[0], 0)
-            outOfBound = True
+            out_of_bound = True
 
-        if outOfBound:
+        if out_of_bound:
             if self.racetrack[new_pos[0]][new_pos[1]] != 3:
                 self.reset()
                 return self.agent.pos, True
@@ -116,14 +116,12 @@ class Game:
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
-            self.agent.pos = self.rnd.choice(self.get_start_cells())
-            return self.agent.pos, True  # TODO maybe send car back to start, instead of keeping the current position?
+            self.agent.pos = self.rnd.choice(self.__get_start_cells())
+            return self.agent.pos, True
 
-        # if is has not returned yet, the position is valid
         return new_pos, False
 
-    def check_intersect(self, old_pos, new_pos):
-        # pass
+    def __check_intersect(self, old_pos, new_pos):
         x_distance = new_pos[0] - old_pos[0]
         y_distance = new_pos[1] - old_pos[1]
         old_pos = copy.deepcopy(old_pos)
@@ -142,11 +140,10 @@ class Game:
                 old_pos = old_pos[0], (self.racetrack.shape[1] - 1)
 
             if self.racetrack[old_pos[0]][old_pos[1]] == 0:
-                # print("intersect")
                 return True
         return False
 
-    def check_velocity(self, vel_change):
+    def __check_velocity(self, vel_change):
         """
         Checks if the velocity is still valid after changing it according to the input. If it is valid the new velocity
         is returned, else the old one is returned.
@@ -184,25 +181,25 @@ class Game:
         """
         return State(self.agent.pos, self.agent.vel)
 
-    def get_start_cells(self):
+    def __get_start_cells(self):
         """
-        Finds all start rectangles.
+        Finds all start cells.
 
         :return: Returns all starting cells as a list of tuples, where each tuple represents one cell
         """
         start_array = np.where(self.racetrack == 2)
-        return self.convert(start_array)
+        return self.__convert(start_array)
 
-    def get_end_cells(self):
+    def __get_end_cells(self):
         """
-        Finds all end rectangles.
+        Finds all end cells.
 
         :return: Returns all end cells as a list of tuples, where each tuple represents one cell
         """
         end_array = np.where(self.racetrack == 3)
-        return self.convert(end_array)
+        return self.__convert(end_array)
 
-    def convert(self, input_tuple):
+    def __convert(self, input_tuple):
         """
         Converts a tuple of 2 ndarrays to a list of tuples. This is a help function to find start/end rectangles.
         E.g. Input ([0,0,0],[4,5,6]) --> Output [(0,4),(0,5),(0,6)], where each tuple is one rectangle

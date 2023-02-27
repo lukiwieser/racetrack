@@ -32,9 +32,9 @@ def play_user() -> None:
 
 def play_ai(playstyle_interactive=False) -> None:
     """
-    Train a AI on a racetrack, and then watch it play.
+    Train an AI on a racetrack, and then watch it play.
 
-    :param playstyle_interactive: if the game the AI plays should be shown life (aka interactively), or if the whole game should be shown in one static image (not interactively)
+    :param playstyle_interactive: if the game that AI plays should be shown life (aka interactively), or if the whole game should be shown in one static image (not interactively)
     """
 
     track = rlist.get_track2()
@@ -62,7 +62,7 @@ def play_ai(playstyle_interactive=False) -> None:
     print(f"train time: {end - start : 2.4f}")
 
     # Evaluate Model
-    # We use a different seed so that the game behaves differently
+    # We use a different seed so that the game behaves differently for evaluation
     if playstyle_interactive:
         game = Game(racetrack=track, visualize=True, random_state=43)
         n_steps = 0
