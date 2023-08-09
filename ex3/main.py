@@ -1,6 +1,8 @@
 import argparse
 import time
 
+import numpy as np
+
 from classes import racetrack_list as rlist
 from classes.action import Action
 from classes.episode_visualizer import EpisodeVisualizer
@@ -8,16 +10,16 @@ from classes.game import Game
 from classes.generator import Generator
 from classes.model import ModelRLMC
 from classes.state import State
+from classes.racetrack_list import RacetrackList
 
 
-def play_user() -> None:
+def play_user(track: np.ndarray) -> None:
     """
     Let the user play a game on a racetrack
+
+    :param track: the racetrack for the game
     """
 
-    # track = rlist.get_track1()
-    g = Generator(random_state=42)
-    track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
     game = Game(racetrack=track, visualize=True, random_state=42)
 
     while not game.is_finished():
@@ -30,17 +32,15 @@ def play_user() -> None:
     print("You reached the finish line!")
 
 
-def play_ai(playstyle_interactive=False) -> None:
+def play_ai(track: np.ndarray, playstyle_interactive: bool) -> None:
     """
     Train an AI on a racetrack, and then watch it play.
 
+    :param track: the racetrack for the game
     :param playstyle_interactive: if the game that AI plays should be shown life (aka interactively), or if the whole game should be shown in one static image (not interactively)
     """
 
-    track = rlist.get_track2()
     model = ModelRLMC(random_state=42)
-    # g = Generator(random_state=42)
-    # track = g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
 
     # Train Model
     game = Game(racetrack=track, visualize=False, random_state=42)
@@ -91,20 +91,57 @@ def play_ai(playstyle_interactive=False) -> None:
             visualizer.visualize_episode(track, episode)
 
 
+def check_positive_int(value_str: str):
+    try:
+        value = int(value_str)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{value_str} is not an integer")
+    if value <= 0:
+        raise argparse.ArgumentTypeError(f"{value_str} is not a positive integer")
+    return value
+
+
+def get_track(track_number: int | None, track_random_seed: int | None) -> np.ndarray:
+    if track_number is not None:
+        return RacetrackList.get_track(track_number)
+    if track_random_seed is not None:
+        g = Generator(random_state=track_random_seed)
+        return g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
+    raise ValueError("either track_number or track_random_seed must have a value")
+
+
 def main():
     parser = argparse.ArgumentParser("machine learning ex3")
-    parser.add_argument('-m', '--mode', help="c", choices=["user", "ai_interactive", "ai_static"], default="ai_static")
+    parser.add_argument('-p', '--playstyle', help="c", choices=["user", "ai_interactive", "ai_static"],
+                        default="ai_static")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-tr', '--track-random', type=check_positive_int)
+    group.add_argument('-tn', '--track-number', type=int,
+                       choices=range(0, RacetrackList.get_tracks_count()))
+
     args = parser.parse_args()
 
-    mode = args.mode
-    print(f"{mode = }")
-    match mode:
+    playstyle = args.playstyle
+    print(f"{playstyle = }")
+
+    track_random_seed = args.track_random
+    track_number = args.track_number
+    if track_number is None and track_random_seed is None:
+        track_number = 0  # set default params if both track-options are none
+    if track_number is not None:
+        print(f"track = track {track_number}")
+    if track_random_seed is not None:
+        print(f"track = random with seed {track_random_seed}")
+
+    track = get_track(track_number, track_random_seed)
+
+    match playstyle:
         case "user":
-            play_user()
+            play_user(track)
         case "ai_interactive":
-            play_ai(playstyle_interactive=True)
+            play_ai(track, playstyle_interactive=True)
         case "ai_static":
-            play_ai(playstyle_interactive=False)
+            play_ai(track, playstyle_interactive=False)
 
 
 if __name__ == "__main__":
