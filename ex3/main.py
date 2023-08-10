@@ -21,14 +21,15 @@ def play_user(track: np.ndarray) -> None:
 
     game = Game(racetrack=track, visualize=True, random_state=42)
 
+    print("Playing as user...")
     while not game.is_finished():
-        print(game.get_state())
-        input_str = input("Please input the change to velocity. format: \"<y> <x>\": ")
+        print(f"* {game.get_state()}")
+        input_str = input("* Please input the change to velocity. format: \"<y> <x>\": ")
         input_list = input_str.split(" ")
         action = Action(int(input_list[0]), int(input_list[1]))
         game.step(action)
 
-    print("You reached the finish line!")
+    print("* You reached the finish line!")
 
 
 def play_ai(track: np.ndarray, playstyle_interactive: bool) -> None:
@@ -42,6 +43,8 @@ def play_ai(track: np.ndarray, playstyle_interactive: bool) -> None:
     model = ModelRLMC(random_state=42)
 
     # Train Model
+    print("Training model...")
+    print("* <n_steps> <n_episode>")
     game = Game(racetrack=track, visualize=False, random_state=42)
     start = time.time()
     for i in range(0, 3000):
@@ -54,27 +57,27 @@ def play_ai(track: np.ndarray, playstyle_interactive: bool) -> None:
             episode.append((state, action, reward))
             n_steps += 1
         if i % 500 == 0:
-            print(str(n_steps) + " " + str(i))
+            print(f"* {n_steps} {i}")
         model.learn(episode)
         game.reset()
     end = time.time()
-    print(f"train time: {end - start : 2.4f}")
+    print(f"* train time: {end - start : 2.4f}s")
 
     # Evaluate Model
     # We use a different seed so that the game behaves differently for evaluation
+    print("Evaluating trained model...")
     if playstyle_interactive:
         game = Game(racetrack=track, visualize=True, random_state=43)
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
-            print(f"ai plays step {n_steps}")
             state = game.get_state()
             action = model.determine_best_action(state)
             game.step(action)
-            print(f"action: {action}, pos: {game.get_state().agent_position}, vel: {game.get_state().agent_velocity}")
+            print(f"* ai plays step {n_steps} [action: {action}, pos: {game.get_state().agent_position}, vel: {game.get_state().agent_velocity}]")
             n_steps += 1
             time.sleep(0.5)
     else:
-        print("plotting 3 games")
+        print("* plotting 3 games")
         visualizer = EpisodeVisualizer()
         game = Game(racetrack=track, visualize=False, random_state=43)
         for _ in range(0, 3):
@@ -119,18 +122,18 @@ def main():
                        choices=range(0, RacetrackList.get_tracks_count()))
 
     args = parser.parse_args()
-
     playstyle = args.playstyle
-    print(f"{playstyle = }")
-
     track_random_seed = args.track_random
     track_number = args.track_number
     if track_number is None and track_random_seed is None:
         track_number = 0  # set default params if both track-options are none
+
+    print("Starting new game with:")
+    print(f"* {playstyle = }")
     if track_number is not None:
-        print(f"track = track {track_number}")
+        print(f"* track = track {track_number}")
     if track_random_seed is not None:
-        print(f"track = random with seed {track_random_seed}")
+        print(f"* track = random with seed {track_random_seed}")
 
     track = get_track(track_number, track_random_seed)
 
