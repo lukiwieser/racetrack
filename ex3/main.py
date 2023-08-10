@@ -3,7 +3,6 @@ import time
 
 import numpy as np
 
-from classes import racetrack_list as rlist
 from classes.action import Action
 from classes.episode_visualizer import EpisodeVisualizer
 from classes.game import Game
