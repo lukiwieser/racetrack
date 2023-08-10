@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+
+# VS Code
+.vscode/
+
+# Jetbrains IDE
+.idea/
+
+# MacOS Files
+**/.DS_Store
+**/.AppleDouble
+**/.LSOverride
