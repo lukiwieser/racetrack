@@ -33,7 +33,7 @@ The main program `main.py` can (optionally) be started with arguments:
   - `ai_interactive`: Train a model on one racetrack, and watch live as the trained model plays a game.
   - `user`: Let the user play on one racetrack by applying inputs via the command line.
 - track:
-  - select a predefined racetrack with `--track 0`, where the number represents the number of the map (default)
+  - select a predefined racetrack with `--track-number 0`, where the number represents the number of the map (default)
   - generate a random racetrack with `--track-random 42`, where the number is the seed of the random generator
 
 An example of this would be:
