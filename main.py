@@ -114,14 +114,12 @@ def get_track(track_number: int | None, track_random_seed: int | None) -> np.nda
 
 def main():
     # define arguments
-    parser = argparse.ArgumentParser("machine learning ex3")
-    parser.add_argument('-p', '--playstyle', help="c", choices=["user", "ai_interactive", "ai_static"],
-                        default="ai_static")
-    parser.add_argument('-e', '--episodes-to-train', type=check_positive_int, default=3000)
+    parser = argparse.ArgumentParser(prog="racetrack", description="Train an AI to drive on a simple racetrack, by using reinforcement learning with monte carlo")
+    parser.add_argument('-p', '--playstyle', help="if the AI should play the game live (ai_interactive), or the game of the AI should be shown as static image (ai_static), or the user can play (user)", choices=["user", "ai_interactive", "ai_static"], default="ai_static")
+    parser.add_argument('-e', '--episodes-to-train', help="how many episodes to train the model", type=check_positive_int, default=3000)
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-tr', '--track-random', type=check_positive_int)
-    group.add_argument('-tn', '--track-number', type=int,
-                       choices=range(0, RacetrackList.get_tracks_count()))
+    group.add_argument('-tr', '--track-random', help="generate a random racetrack with specified seed", type=check_positive_int, metavar='SEED')
+    group.add_argument('-tn', '--track-number', help="select a predefined racetrack, where the number represents the number of the map", type=int, choices=range(0, RacetrackList.get_tracks_count()))
 
     # parse arguments
     args = parser.parse_args()
