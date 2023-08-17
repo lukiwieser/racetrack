@@ -35,6 +35,10 @@ The main program `main.py` can (optionally) be started with arguments:
 - track:
   - select a predefined racetrack with `--track-number 0`, where the number represents the number of the map (default)
   - generate a random racetrack with `--track-random 42`, where the number is the seed of the random generator
+- episodes to train:
+  - select how many episodes to train the model with `--episodes-to-train 4000` 
+- help:
+  - show help message with `--help` 
 
 An example of this would be:
 
