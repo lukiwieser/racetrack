@@ -32,7 +32,7 @@ def play_user(track: np.ndarray) -> None:
     print("* You reached the finish line!")
 
 
-def play_ai(track: np.ndarray, playstyle_interactive: bool) -> None:
+def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bool) -> None:
     """
     Train an AI on a racetrack, and then watch it play.
 
@@ -47,7 +47,7 @@ def play_ai(track: np.ndarray, playstyle_interactive: bool) -> None:
     print("* <n_steps> <n_episode>")
     game = Game(racetrack=track, visualize=False, random_state=42)
     start = time.time()
-    for i in range(0, 3000):
+    for i in range(0, episodes_to_train):
         episode: list[tuple[State, Action, int]] = []
         n_steps = 0
         while not game.is_finished() and n_steps < 1000:
@@ -113,37 +113,43 @@ def get_track(track_number: int | None, track_random_seed: int | None) -> np.nda
 
 
 def main():
+    # define arguments
     parser = argparse.ArgumentParser("machine learning ex3")
     parser.add_argument('-p', '--playstyle', help="c", choices=["user", "ai_interactive", "ai_static"],
                         default="ai_static")
+    parser.add_argument('-e', '--episodes-to-train', type=check_positive_int, default=3000)
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-tr', '--track-random', type=check_positive_int)
     group.add_argument('-tn', '--track-number', type=int,
                        choices=range(0, RacetrackList.get_tracks_count()))
 
+    # parse arguments
     args = parser.parse_args()
+    episodes_to_train = args.episodes_to_train
     playstyle = args.playstyle
     track_random_seed = args.track_random
     track_number = args.track_number
     if track_number is None and track_random_seed is None:
         track_number = 0  # set default params if both track-options are none
 
+    # print start configuration
     print("Starting new game with:")
     print(f"* {playstyle = }")
     if track_number is not None:
         print(f"* track = track {track_number}")
     if track_random_seed is not None:
         print(f"* track = random with seed {track_random_seed}")
+    print(f"* episodes to train = {episodes_to_train}")
 
+    # get track & play
     track = get_track(track_number, track_random_seed)
-
     match playstyle:
         case "user":
             play_user(track)
         case "ai_interactive":
-            play_ai(track, playstyle_interactive=True)
+            play_ai(track, episodes_to_train, playstyle_interactive=True)
         case "ai_static":
-            play_ai(track, playstyle_interactive=False)
+            play_ai(track, episodes_to_train, playstyle_interactive=False)
 
 
 if __name__ == "__main__":
