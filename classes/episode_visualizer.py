@@ -9,13 +9,13 @@ class EpisodeVisualizer:
     Visualizing one game as a static image.
     The game is given by a single episode.
     """
-    def __vis(self, map, episode, title):
-        vis = EpisodeVisualizerIntern(map, episode, title)
 
     def visualize_episode(self, map, episode, title):
-        t = threading.Thread(target=partial(self.__vis, map, episode, title))
+        t = threading.Thread(target=partial(self._run_in_thread, map, episode, title))
         t.start()
 
+    def _run_in_thread(self, map, episode, title):
+        vis = EpisodeVisualizerIntern(map, episode, title)
 
 class EpisodeVisualizerIntern:
     def __init__(self, map, episode, title, boardsize=600):
