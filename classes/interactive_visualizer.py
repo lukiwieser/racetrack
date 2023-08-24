@@ -2,6 +2,9 @@ import copy
 import threading
 from functools import partial
 from tkinter import *
+from typing import Any
+
+import numpy as np
 
 from .state_with_racetrack import StateWithRacetrack
 
@@ -11,10 +14,8 @@ class InteractiveVisualizer:
     Visualizing a game as a dynamic image.
     If the state of the game changes the visualization also changes dynamically.
     """
-    def __vis(self, state, title):
-        vis = InteractiveVisualizerIntern(state, title)
 
-    def __init__(self, state: StateWithRacetrack, title):
+    def __init__(self, state: StateWithRacetrack, title: str):
         self.state = copy.deepcopy(state)
         t = threading.Thread(target=partial(self.__vis, self.state, title))
         t.start()
@@ -22,9 +23,12 @@ class InteractiveVisualizer:
     def update_agent(self, new_pos: tuple[int, int]) -> None:
         self.state.agent_position = new_pos
 
+    def __vis(self, state: StateWithRacetrack, title: str) -> None:
+        InteractiveVisualizerIntern(state, title)
+
 
 class InteractiveVisualizerIntern:
-    def __init__(self, state: StateWithRacetrack, title, boardsize=600):
+    def __init__(self, state: StateWithRacetrack, title: str, boardsize: int = 600):
         self.state = state
         self.old_state = copy.deepcopy(state)
         self.back_up_map = copy.deepcopy(state.racetrack)
@@ -38,7 +42,7 @@ class InteractiveVisualizerIntern:
         # start blocking main loop
         self.window.mainloop()
 
-    def init_board(self, boardsize, title):
+    def init_board(self, boardsize: int, title: str) -> None:
         """
         Creates the tkinter window and initializes it with the correct state.
 
@@ -55,7 +59,7 @@ class InteractiveVisualizerIntern:
         # set initial position of agent
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
 
-    def create_board(self, input_array, boardsize):
+    def create_board(self, input_array: np.ndarray, boardsize: int):
         """
         Converts the initial ndarray-2d array into a grid of rectangles.
 
@@ -75,7 +79,7 @@ class InteractiveVisualizerIntern:
                 input_array[i][j] = self.canvas.create_rectangle(x1, y1, x2, y2, fill=color)
         return input_array
 
-    def get_color(self, num: int):
+    def get_color(self, num: int) -> str:
         """
         Returns color corresponding to the cell type.
 
@@ -90,7 +94,7 @@ class InteractiveVisualizerIntern:
         else:
             return "green"
 
-    def change_color(self, item, color):
+    def change_color(self, item: Any, color: str) -> None:
         """
         Changes the color of a specific rectangle in the grid.
 
@@ -98,19 +102,19 @@ class InteractiveVisualizerIntern:
         """
         self.canvas.itemconfig(int(item), fill=color)
 
-    def updateAgent(self):
+    def updateAgent(self) -> None:
         """
         Updates the rectangles with the correct colors
         """
 
-        # reset color of old posiiton
+        # reset color of old position
         old_color = self.get_color(self.back_up_map[self.old_state.agent_position[0]][self.old_state.agent_position[1]])
         self.change_color(self.board[self.old_state.agent_position[0]][self.old_state.agent_position[1]], old_color)
 
         # color new position correct
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
 
-    def check_for_state_change(self):
+    def check_for_state_change(self) -> None:
         """
         Checks if the position of the car changed and adjusts the coloring of the rectangles if it is necessary.
         After that it puts itself in the event loop again.
