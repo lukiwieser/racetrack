@@ -17,13 +17,13 @@ class InteractiveVisualizer:
 
     def __init__(self, state: StateWithRacetrack, title: str):
         self.state = copy.deepcopy(state)
-        t = threading.Thread(target=partial(self.__vis, self.state, title))
+        t = threading.Thread(target=partial(self._run_in_thread, self.state, title))
         t.start()
 
     def update_agent(self, new_pos: tuple[int, int]) -> None:
         self.state.agent_position = new_pos
 
-    def __vis(self, state: StateWithRacetrack, title: str) -> None:
+    def _run_in_thread(self, state: StateWithRacetrack, title: str) -> None:
         InteractiveVisualizerIntern(state, title)
 
 
@@ -59,7 +59,7 @@ class InteractiveVisualizerIntern:
         # set initial position of agent
         self.change_color(self.board[self.state.agent_position[0]][self.state.agent_position[1]], "red")
 
-    def create_board(self, input_array: np.ndarray, boardsize: int):
+    def create_board(self, input_array: np.ndarray, boardsize: int) -> np.ndarray:
         """
         Converts the initial ndarray-2d array into a grid of rectangles.
 
@@ -102,7 +102,7 @@ class InteractiveVisualizerIntern:
         """
         self.canvas.itemconfig(int(item), fill=color)
 
-    def updateAgent(self) -> None:
+    def update_agent(self) -> None:
         """
         Updates the rectangles with the correct colors
         """
@@ -122,7 +122,7 @@ class InteractiveVisualizerIntern:
         if self.state.agent_position == self.old_state.agent_position:
             pass
         else:
-            self.updateAgent()
+            self.update_agent()
             self.old_state.agent_position = copy.deepcopy(self.state.agent_position)
         self.window.update()
         self.window.after(0, self.check_for_state_change)
