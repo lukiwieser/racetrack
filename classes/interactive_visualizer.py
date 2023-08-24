@@ -11,12 +11,12 @@ class InteractiveVisualizer:
     Visualizing a game as a dynamic image.
     If the state of the game changes the visualization also changes dynamically.
     """
-    def __vis(self, state):
-        vis = InteractiveVisualizerIntern(state)
+    def __vis(self, state, title):
+        vis = InteractiveVisualizerIntern(state, title)
 
-    def __init__(self, state: StateWithRacetrack):
+    def __init__(self, state: StateWithRacetrack, title):
         self.state = copy.deepcopy(state)
-        t = threading.Thread(target=partial(self.__vis, self.state))
+        t = threading.Thread(target=partial(self.__vis, self.state, title))
         t.start()
 
     def update_agent(self, new_pos: tuple[int, int]) -> None:
@@ -24,13 +24,13 @@ class InteractiveVisualizer:
 
 
 class InteractiveVisualizerIntern:
-    def __init__(self, state: StateWithRacetrack, boardsize=600):
+    def __init__(self, state: StateWithRacetrack, title, boardsize=600):
         self.state = state
         self.old_state = copy.deepcopy(state)
         self.back_up_map = copy.deepcopy(state.racetrack)
 
         # initiate the gameboard
-        self.init_board(boardsize)
+        self.init_board(boardsize, title)
 
         # start the event loop that checks for position changes
         self.window.after(0, self.check_for_state_change)
@@ -38,13 +38,14 @@ class InteractiveVisualizerIntern:
         # start blocking main loop
         self.window.mainloop()
 
-    def init_board(self, boardsize):
+    def init_board(self, boardsize, title):
         """
         Creates the tkinter window and initializes it with the correct state.
 
         :param boardsize: The size of the wanted board.
         """
         self.window = Tk()
+        self.window.title(title)
         self.canvas = Canvas(self.window, width=boardsize, height=boardsize)
         self.canvas.pack()
 

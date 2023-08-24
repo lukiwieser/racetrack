@@ -28,7 +28,7 @@ class Game:
         # initialize the visualizer
         if visualize:
             state = StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
-            self.visualizer = InteractiveVisualizer(state)
+            self.visualizer = InteractiveVisualizer(state, "racetrack")
 
     def reset(self):
         # initialize Agent with starting position and velocity
