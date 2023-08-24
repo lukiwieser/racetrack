@@ -9,29 +9,30 @@ class EpisodeVisualizer:
     Visualizing one game as a static image.
     The game is given by a single episode.
     """
-    def __vis(self, map, episode):
-        vis = EpisodeVisualizerIntern(map, episode)
+    def __vis(self, map, episode, title):
+        vis = EpisodeVisualizerIntern(map, episode, title)
 
-    def visualize_episode(self, map, episode):
-        t = threading.Thread(target=partial(self.__vis, map, episode))
+    def visualize_episode(self, map, episode, title):
+        t = threading.Thread(target=partial(self.__vis, map, episode, title))
         t.start()
 
 
 class EpisodeVisualizerIntern:
-    def __init__(self, map, episode, boardsize=600):
+    def __init__(self, map, episode, title, boardsize=600):
         self.map = copy.deepcopy(map)
         self.episode = copy.deepcopy(episode)
 
         # initiate the gameboard
-        self.init_board(boardsize)
+        self.init_board(boardsize, title)
 
-    def init_board(self, boardsize):
+    def init_board(self, boardsize, title):
         """
         Creates the tkinter window and initializes it with the correct state.
 
         :param boardsize: The size of the wanted board.
         """
         self.window = Tk()
+        self.window.title(title)
         self.canvas = Canvas(self.window, width=boardsize, height=boardsize)
         self.canvas.pack()
 

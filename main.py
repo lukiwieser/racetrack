@@ -80,7 +80,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
         print("* plotting 3 games")
         visualizer = EpisodeVisualizer()
         game = Game(racetrack=track, visualize=False, random_state=43)
-        for _ in range(0, 3):
+        for i in range(0, 3):
             game.reset()
             n_steps = 0
             episode: list[tuple[State, Action, int]] = []
@@ -90,7 +90,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
                 reward = game.step(action)
                 episode.append((state, action, reward))
                 n_steps += 1
-            visualizer.visualize_episode(track, episode)
+            visualizer.visualize_episode(track, episode, f"racetrack | testrun {i+1}")
 
 
 def check_positive_int(value_str: str):
