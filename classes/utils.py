@@ -9,7 +9,8 @@ from classes.racetrack_list import RacetrackList
 def check_positive_int(value_str: str) -> int:
     """
     Helper function for argparse, to convert arguments into positive integers
-    @param value_str: argument value
+
+    :param value_str: argument value
     """
     try:
         value = int(value_str)
