@@ -49,15 +49,13 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
     start = time.time()
     for i in range(0, episodes_to_train):
         episode: list[tuple[State, Action, int]] = []
-        n_steps = 0
-        while not game.is_finished() and n_steps < 1000:
+        while not game.is_finished() and game.get_n_steps() < 1000:
             state = game.get_state()
             action = model.determine_epsilon_action(state, 0.1)
             reward = game.noisy_step(action)
             episode.append((state, action, reward))
-            n_steps += 1
         if i % 500 == 0:
-            print(f"* {n_steps} {i}")
+            print(f"* {game.get_n_steps()} {i}")
         model.learn(episode)
         game.reset()
     end = time.time()
@@ -68,13 +66,11 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
     print("Evaluating trained model...")
     if playstyle_interactive:
         game = Game(racetrack=track, visualize=True, random_state=43)
-        n_steps = 0
-        while not game.is_finished() and n_steps < 1000:
+        while not game.is_finished() and game.get_n_steps() < 1000:
             state = game.get_state()
             action = model.determine_best_action(state)
             game.step(action)
-            print(f"* ai plays step {n_steps} [action: {action}, pos: {game.get_state().agent_position}, vel: {game.get_state().agent_velocity}]")
-            n_steps += 1
+            print(f"* ai plays step {game.get_n_steps()} [action: {action}, pos: {game.get_state().agent_position}, vel: {game.get_state().agent_velocity}]")
             time.sleep(0.5)
     else:
         print("* plotting 3 games")
@@ -82,18 +78,16 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
         game = Game(racetrack=track, visualize=False, random_state=43)
         for i in range(0, 3):
             game.reset()
-            n_steps = 0
             episode: list[tuple[State, Action, int]] = []
-            while not game.is_finished() and n_steps < 1000:
+            while not game.is_finished() and game.get_n_steps() < 1000:
                 state = game.get_state()
                 action = model.determine_best_action(state)
                 reward = game.step(action)
                 episode.append((state, action, reward))
-                n_steps += 1
             visualizer.visualize_episode(track, episode, f"racetrack | testrun {i+1}")
 
 
-def main():
+def main() -> None:
     # define arguments
     parser = argparse.ArgumentParser(prog="racetrack", description="Train an AI to drive on a simple racetrack, by using reinforcement learning with monte carlo")
     parser.add_argument('-p', '--playstyle', help="if the AI should play the game live (ai_interactive), or the game of the AI should be shown as static image (ai_static), or the user can play (user)", choices=["user", "ai_interactive", "ai_static"], default="ai_static")

@@ -30,11 +30,20 @@ class Game:
             state = StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
             self.visualizer = InteractiveVisualizer(state, "racetrack")
 
-    def reset(self):
-        # initialize Agent with starting position and velocity
-        self.agent = Agent(self.rnd.choice(self.__get_start_cells()), (0, 0))
+    def get_n_steps(self) -> int:
+        """
+        Get number of steps that were done in the current game
+        """
+        return self.n_steps
 
-    def is_finished(self):
+    def reset(self) -> None:
+        """
+        Reset game to starting conditions
+        """
+        self.agent = Agent(self.rnd.choice(self.__get_start_cells()), (0, 0))
+        self.n_steps = 0
+
+    def is_finished(self) -> bool:
         if self.agent.pos in self.__get_end_cells():
             return True
         return False
@@ -57,6 +66,8 @@ class Game:
         :param action: indicates how the velocity should be changed
         :return: returns a reward
         """
+
+        self.n_steps += 1
 
         # create new velocity. If it is valid, set the agent velocity to the new velocity
         self.agent.vel = self.__check_velocity((action.x, action.y))
@@ -110,7 +121,8 @@ class Game:
 
         if out_of_bound:
             if self.racetrack[new_pos[0]][new_pos[1]] != 3:
-                self.reset()
+                # reset agents starting position and velocity
+                self.agent = Agent(self.rnd.choice(self.__get_start_cells()), (0, 0))
                 return self.agent.pos, True
 
         # checking if it is on an invalid cell
@@ -149,7 +161,7 @@ class Game:
         is returned, else the old one is returned.
 
         :param vel_change: Changes to the velocity
-        :return: Returns new velocity if it is valid, else it returns the old one
+        :return: New velocity if it is valid, else it returns the old one
         """
         # checks if velocity is not changed by more than +-1
         allowed = [-1, 0, 1]
@@ -175,9 +187,9 @@ class Game:
 
     def get_state(self) -> State:
         """
-        Returns the current state of the game
+        Get the current state of the game
 
-        :return: returns current state.
+        :return: Current state
         """
         return State(self.agent.pos, self.agent.vel)
 
