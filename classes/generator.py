@@ -13,23 +13,24 @@ class Generator:
         """
         self.rnd = Random(random_state)
 
-    def generate_racetrack_safely(self, size: int, n_edges: int, kernel_size: int) -> np.ndarray:
+    def generate_racetrack_safely(self, size: int, n_edges: int, kernel_size: int, max_iterations: int = 10) -> np.ndarray:
         """
         Generate a random racetrack. Guarantees that the racetrack will have Start and Finish cells.
 
         :param size: specifies the size of the whole racetrack in x and y direction (square)
         :param n_edges: number of edges the racetrack should have
         :param kernel_size: basically specifies the size of the track iseven
+        :param max_iterations: how many times to try to generate a racetrack, if the generation fails (i.e. there are no start or end cells)
         :return: Returns a 2d numpy array, where each element represents a cell of the racetrack. The first dimension is the row, the second is the colum.
         """
-        for i in range(0, 10):
+        for i in range(0, max_iterations):
             track = self.generate_racetrack(size, n_edges, kernel_size)
             start_cells = np.where(track == 2)[0]
             end_cells = np.where(track == 3)[0]
-
             if len(start_cells) > 0 and len(end_cells) > 0:
                 return track
-        return None
+
+        raise RuntimeError("Could not generate a racetrack with start and finish cells. Tried 10 times.")
 
     def generate_racetrack(self, size: int, n_edges: int, kernel_size: int) -> np.ndarray:
         """
