@@ -5,30 +5,21 @@ import numpy as np
 
 from .action import Action
 from .agent import Agent
-from .interactive_visualizer import InteractiveVisualizer
 from .state import State
 from .state_with_racetrack import StateWithRacetrack
 
 
 class Game:
-    def __init__(self, racetrack: np.ndarray, visualize=False, random_state: None | int = None):
+    def __init__(self, racetrack: np.ndarray, random_state: None | int = None):
         """
         Capsules all the game logic. Mainly contains the Environment and Agent.
 
         :param racetrack: the racetrack on which the game should be played
-        :param visualize: if the game should be visualized live when being played
         :param random_state: Used for generating the randomness of the racetrack. Pass an int for reproducible output across multiple function calls
         """
         self.rnd = Random(random_state)
         self.racetrack = racetrack
-        self.visualize = visualize
-
         self.reset()
-
-        # initialize the visualizer
-        if visualize:
-            state = StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
-            self.visualizer = InteractiveVisualizer(state, "racetrack")
 
     def get_n_steps(self) -> int:
         """
@@ -74,9 +65,6 @@ class Game:
 
         # create new position. If it is valid, set the agent position to the new position
         self.agent.pos, has_been_reset = self.__check_pos()
-
-        if self.visualize:
-            self.visualizer.update_agent(self.agent.pos)
 
         # return reward
         if has_been_reset:
@@ -192,6 +180,14 @@ class Game:
         :return: Current state
         """
         return State(self.agent.pos, self.agent.vel)
+
+    def get_state_with_racetrack(self) -> StateWithRacetrack:
+        """
+        Get the current state of the game including the racetrack
+
+        :return: Current state with racetrack
+        """
+        return StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
 
     def __get_start_cells(self):
         """

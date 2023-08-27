@@ -6,6 +6,7 @@ import numpy as np
 from classes.action import Action
 from classes.episode_visualizer import EpisodeVisualizer
 from classes.game import Game
+from classes.interactive_visualizer import InteractiveVisualizer
 from classes.model import ModelRLMC
 from classes.state import State
 from classes.racetrack_list import RacetrackList
@@ -16,10 +17,11 @@ def play_user(track: np.ndarray) -> None:
     """
     Let the user play a game on a racetrack
 
-    :param track: the racetrack for the game
+    :param track: The racetrack for the game
     """
 
-    game = Game(racetrack=track, visualize=True, random_state=42)
+    game = Game(racetrack=track, random_state=42)
+    visualizer = InteractiveVisualizer(game.get_state_with_racetrack(), "racetrack")
 
     print("Playing as user...")
     while not game.is_finished():
@@ -28,6 +30,7 @@ def play_user(track: np.ndarray) -> None:
         input_list = input_str.split(" ")
         action = Action(int(input_list[0]), int(input_list[1]))
         game.step(action)
+        visualizer.update_agent(game.get_state().agent_position)
 
     print("* You reached the finish line!")
 
@@ -36,8 +39,9 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
     """
     Train an AI on a racetrack, and then watch it play.
 
-    :param track: the racetrack for the game
-    :param playstyle_interactive: if the game that AI plays should be shown life (aka interactively), or if the whole game should be shown in one static image (not interactively)
+    :param track: The racetrack for the game
+    :param episodes_to_train: How many episodes to train the model
+    :param playstyle_interactive: If the game that AI plays should be shown life (aka interactively), or if the whole game should be shown in one static image (not interactively)
     """
 
     model = ModelRLMC(random_state=42)
@@ -45,7 +49,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
     # Train Model
     print("Training model...")
     print("* <n_steps> <n_episode>")
-    game = Game(racetrack=track, visualize=False, random_state=42)
+    game = Game(racetrack=track, random_state=42)
     start = time.time()
     for i in range(0, episodes_to_train):
         episode: list[tuple[State, Action, int]] = []
@@ -65,17 +69,20 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
     # We use a different seed so that the game behaves differently for evaluation
     print("Evaluating trained model...")
     if playstyle_interactive:
-        game = Game(racetrack=track, visualize=True, random_state=43)
+        game = Game(racetrack=track, random_state=43)
+        visualizer = InteractiveVisualizer(game.get_state_with_racetrack(), "racetrack")
         while not game.is_finished() and game.get_n_steps() < 1000:
             state = game.get_state()
             action = model.determine_best_action(state)
             game.step(action)
+            visualizer.update_agent(game.get_state().agent_position)
             print(f"* ai plays step {game.get_n_steps()} [action: {action}, pos: {game.get_state().agent_position}, vel: {game.get_state().agent_velocity}]")
             time.sleep(0.5)
+        print("* ai reached the finish line!")
     else:
         print("* plotting 3 games")
         visualizer = EpisodeVisualizer()
-        game = Game(racetrack=track, visualize=False, random_state=43)
+        game = Game(racetrack=track, random_state=43)
         for i in range(0, 3):
             game.reset()
             episode: list[tuple[State, Action, int]] = []
