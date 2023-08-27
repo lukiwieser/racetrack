@@ -45,11 +45,11 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
     """
 
     model = ModelRLMC(random_state=42)
+    game = Game(racetrack=track, random_state=42)
 
     # Train Model
     print("Training model...")
     print("* <n_steps> <n_episode>")
-    game = Game(racetrack=track, random_state=42)
     start = time.time()
     for i in range(0, episodes_to_train):
         episode: list[tuple[State, Action, int]] = []
@@ -66,10 +66,8 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
     print(f"* train time: {end - start : 2.4f}s")
 
     # Evaluate Model
-    # We use a different seed so that the game behaves differently for evaluation
     print("Evaluating trained model...")
     if playstyle_interactive:
-        game = Game(racetrack=track, random_state=43)
         visualizer = InteractiveVisualizer(game.get_state_with_racetrack(), "racetrack")
         while not game.is_finished() and game.get_n_steps() < 1000:
             state = game.get_state()
@@ -82,9 +80,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
     else:
         print("* plotting 3 games")
         visualizer = EpisodeVisualizer()
-        game = Game(racetrack=track, random_state=43)
         for i in range(0, 3):
-            game.reset()
             episode: list[tuple[State, Action, int]] = []
             while not game.is_finished() and game.get_n_steps() < 1000:
                 state = game.get_state()
@@ -92,6 +88,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
                 reward = game.step(action)
                 episode.append((state, action, reward))
             visualizer.visualize_episode(track, episode, f"racetrack | testrun {i+1}")
+            game.reset()
 
 
 def main() -> None:
