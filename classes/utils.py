@@ -15,7 +15,7 @@ def check_positive_int(value_str: str) -> int:
         value = int(value_str)
     except ValueError:
         raise argparse.ArgumentTypeError(f"{value_str} is not an integer")
-    if value <= 0:
+    if value < 0:
         raise argparse.ArgumentTypeError(f"{value_str} is not a positive integer")
     return value
 
