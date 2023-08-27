@@ -6,10 +6,10 @@ import numpy as np
 from classes.action import Action
 from classes.episode_visualizer import EpisodeVisualizer
 from classes.game import Game
-from classes.generator import Generator
 from classes.model import ModelRLMC
 from classes.state import State
 from classes.racetrack_list import RacetrackList
+from classes.utils import check_positive_int, get_track
 
 
 def play_user(track: np.ndarray) -> None:
@@ -91,25 +91,6 @@ def play_ai(track: np.ndarray, episodes_to_train: int, playstyle_interactive: bo
                 episode.append((state, action, reward))
                 n_steps += 1
             visualizer.visualize_episode(track, episode, f"racetrack | testrun {i+1}")
-
-
-def check_positive_int(value_str: str):
-    try:
-        value = int(value_str)
-    except ValueError:
-        raise argparse.ArgumentTypeError(f"{value_str} is not an integer")
-    if value <= 0:
-        raise argparse.ArgumentTypeError(f"{value_str} is not a positive integer")
-    return value
-
-
-def get_track(track_number: int | None, track_random_seed: int | None) -> np.ndarray:
-    if track_number is not None:
-        return RacetrackList.get_track(track_number)
-    if track_random_seed is not None:
-        g = Generator(random_state=track_random_seed)
-        return g.generate_racetrack_safely(size=50, n_edges=4, kernel_size=7)
-    raise ValueError("either track_number or track_random_seed must have a value")
 
 
 def main():
