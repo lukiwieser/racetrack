@@ -1,5 +1,6 @@
 from collections import defaultdict
 from random import Random
+from typing import DefaultDict
 
 import numpy as np
 
@@ -64,16 +65,15 @@ class ModelRLMC:
         """
         Learn from a given episode
         """
-        episode_reversed = list(reversed(episode))
-        g = 0
-        for i, (state, action, reward) in enumerate(episode_reversed):
-            g = self.gamma * g + reward
+        state_action_pair_counts: DefaultDict[tuple[State, Action], int] = defaultdict(int)
+        for state, action, reward in episode:
+            state_action_pair_counts[(state, action)] += 1
 
-            # TODO faster check if first-state-action pair
-            is_first_state_action_pair = True
-            for _, (state_pre, action_pre, reward_pre) in enumerate(episode_reversed[i + 1::]):
-                if state == state_pre and action == action_pre:
-                    is_first_state_action_pair = False
+        g = 0
+        for state, action, reward in reversed(episode):
+            g = self.gamma * g + reward
+            state_action_pair_counts[(state, action)] -= 1
+            is_first_state_action_pair = state_action_pair_counts[(state, action)] == 0
 
             if is_first_state_action_pair:
                 n = self.q_counts[(state, action)]
