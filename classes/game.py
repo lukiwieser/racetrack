@@ -1,4 +1,3 @@
-import copy
 from random import Random
 
 import numpy as np
@@ -99,12 +98,6 @@ class Game:
         new_pos = (self.agent.pos[0] + self.agent.vel[0],
                    self.agent.pos[1] + self.agent.vel[1])
 
-        # reset if it cuts corners
-        if self.__check_intersect(self.agent.pos, new_pos):
-            self.agent.reset_velocity()
-            self.agent.pos = self.rnd.choice(self.__get_start_cells())
-            return True
-
         # checking if it is out of bounds
         # car can't move out of the grid.
         out_of_bound = False
@@ -130,6 +123,12 @@ class Game:
             self.agent = Agent(self.rnd.choice(self.__get_start_cells()), (0, 0))
             return True
 
+        # reset if it cuts corners
+        if self.__check_intersect(self.agent.pos, new_pos):
+            self.agent.reset_velocity()
+            self.agent.pos = self.rnd.choice(self.__get_start_cells())
+            return True
+
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
@@ -140,26 +139,41 @@ class Game:
         self.agent.pos = new_pos
         return False
 
-    def __check_intersect(self, old_pos, new_pos):
-        x_distance = new_pos[0] - old_pos[0]
-        y_distance = new_pos[1] - old_pos[1]
-        old_pos = copy.deepcopy(old_pos)
+    def __check_intersect(self, pos0: tuple[int, int], pos1: tuple[int, int]) -> bool:
+        """
+        Checks if there are any invalid cells between two specified positions using "Bresenham's Line Algorithm".
+        This is done by following a line between the positions and checking its path for invalid cells.
 
-        while x_distance > 0 or y_distance > 0:
-            if x_distance > 0:
-                x_distance -= 1
-                old_pos = (old_pos[0] + 1, old_pos[1])
-            if y_distance > 0:
-                y_distance -= 1
-                old_pos = (old_pos[0], old_pos[1] + 1)
+        :returns: True if invalid cells exist between the positions, otherwise False.
+        """
+        x0, y0 = pos0
+        x1, y1 = pos1
 
-            if old_pos[0] >= self.racetrack.shape[0]:
-                old_pos = (self.racetrack.shape[0] - 1, old_pos[1])
-            if old_pos[1] >= self.racetrack.shape[1]:
-                old_pos = old_pos[0], (self.racetrack.shape[1] - 1)
+        dx = abs(x1 - x0)
+        dy = -abs(y1 - y0)
+        sx = 1 if x0 < x1 else -1
+        sy = 1 if y0 < y1 else -1
+        error = dx + dy
 
-            if self.racetrack[old_pos[0]][old_pos[1]] == 0:
+        while True:
+            if self.racetrack[x0][y0] == 0:
                 return True
+
+            if x0 == x1 and y0 == y1:
+                break
+
+            e2 = 2 * error
+            if e2 >= dy:
+                if x0 == x1:
+                    break
+                error += dy
+                x0 += sx
+            if e2 <= dx:
+                if y0 == y1:
+                    break
+                error += dx
+                y0 += sy
+
         return False
 
     def __update_velocity(self, vel_change: tuple[int, int]) -> None:
