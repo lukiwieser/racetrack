@@ -21,12 +21,6 @@ class Game:
         self.racetrack = racetrack
         self.reset()
 
-    def get_n_steps(self) -> int:
-        """
-        Get number of steps that were done in the current game
-        """
-        return self.n_steps
-
     def reset(self) -> None:
         """
         Reset game to starting conditions
@@ -36,11 +30,31 @@ class Game:
 
     def is_finished(self) -> bool:
         """
-        Returns if the game is finished, which means that the agent reached the finish line.
+        Returns if the game is finished. This means that the agent reached the finish line.
         """
-        if self.agent.pos in self.__get_end_cells():
-            return True
-        return False
+        return self.agent.pos in self.__get_end_cells()
+
+    def get_n_steps(self) -> int:
+        """
+        Get number of steps that were done in the current game
+        """
+        return self.n_steps
+
+    def get_state(self) -> State:
+        """
+        Get the current state of the game
+
+        :return: Current state
+        """
+        return State(self.agent.pos, self.agent.vel)
+
+    def get_state_with_racetrack(self) -> StateWithRacetrack:
+        """
+        Get the current state of the game including the racetrack
+
+        :return: Current state with racetrack
+        """
+        return StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
 
     def noisy_step(self, action: Action) -> int:
         """
@@ -63,23 +77,24 @@ class Game:
 
         self.n_steps += 1
 
-        # create new velocity. If it is valid, set the agent velocity to the new velocity
-        self.agent.vel = self.__check_velocity((action.x, action.y))
-
-        # create new position. If it is valid, set the agent position to the new position
-        self.agent.pos, has_been_reset = self.__check_pos()
+        # apply velocity change & update position
+        self.__update_velocity((action.x, action.y))
+        has_been_reset = self.__update_position()
 
         # return reward
-        if has_been_reset:
-            return -5
-        return -1
+        return -5 if has_been_reset else -1
 
-    def __check_pos(self):
+    def __update_position(self) -> bool:
         """
-        Checks if the position is still valid after applying the velocity. If it is valid the new position is
-        returned, else the old one is returned.
+        Updates the position of the agent by adding the current velocity.
+        If the new position is invalid, it will be reset to a random position on the start-line.
 
-        :return: Returns new position if it is valid, else it returns the old one
+        Invalid positions are:
+        (1) if the agent cuts corners
+        (2) the agent is outside the track
+        (3) the agent would be outside the map
+
+        :return: Returns if the agents position has been reset or not.
         """
         new_pos = (self.agent.pos[0] + self.agent.vel[0],
                    self.agent.pos[1] + self.agent.vel[1])
@@ -88,7 +103,7 @@ class Game:
         if self.__check_intersect(self.agent.pos, new_pos):
             self.agent.reset_velocity()
             self.agent.pos = self.rnd.choice(self.__get_start_cells())
-            return self.agent.pos, True
+            return True
 
         # checking if it is out of bounds
         # car can't move out of the grid.
@@ -110,19 +125,20 @@ class Game:
             new_pos = (new_pos[0], 0)
             out_of_bound = True
 
-        if out_of_bound:
-            if self.racetrack[new_pos[0]][new_pos[1]] != 3:
-                # reset agents starting position and velocity
-                self.agent = Agent(self.rnd.choice(self.__get_start_cells()), (0, 0))
-                return self.agent.pos, True
+        # reset agent, if out of bounds & not at finish-line
+        if out_of_bound and self.racetrack[new_pos[0]][new_pos[1]] != 3:
+            self.agent = Agent(self.rnd.choice(self.__get_start_cells()), (0, 0))
+            return True
 
         # checking if it is on an invalid cell
         if self.racetrack[new_pos[0]][new_pos[1]] == 0:
             self.agent.reset_velocity()
             self.agent.pos = self.rnd.choice(self.__get_start_cells())
-            return self.agent.pos, True
+            return True
 
-        return new_pos, False
+        # new position is valid
+        self.agent.pos = new_pos
+        return False
 
     def __check_intersect(self, old_pos, new_pos):
         x_distance = new_pos[0] - old_pos[0]
@@ -146,51 +162,34 @@ class Game:
                 return True
         return False
 
-    def __check_velocity(self, vel_change):
+    def __update_velocity(self, vel_change: tuple[int, int]) -> None:
         """
-        Checks if the velocity is still valid after changing it according to the input. If it is valid the new velocity
-        is returned, else the old one is returned.
+        Applies the velocity-change to the agents' velocity.
+        If the new velocity is to large/small it will be capped at the maximum/minimum.
+        If the new velocity is 0, the velocity will be set to (1, 0)
 
         :param vel_change: Changes to the velocity
-        :return: New velocity if it is valid, else it returns the old one
         """
-        # checks if velocity is not changed by more than +-1
+
+        # velocity-change must be between -1 and 1
         allowed = [-1, 0, 1]
         if vel_change[0] not in allowed or vel_change[1] not in allowed:
             print("Cannot modify velocity by more then +-1")
-            return self.agent.vel
+            return
 
+        # determine new velocity
         new_vel = (self.agent.vel[0] + vel_change[0], self.agent.vel[1] + vel_change[1])
 
-        # velocity cant be 0
-        if new_vel[0] == 0 and new_vel[1] == 0:
-            return (1, 0)
-
-        # checks if velocity is >= 0 and < 5
+        # velocity must be >= 0 and <= 4
         if new_vel[0] > 4 or new_vel[0] < -4 or new_vel[1] > 4 or new_vel[1] < -4:
-            # print("Exceeded Velocity limits")
-            # velocity cant be 0
-            if self.agent.vel[0] == 0 and self.agent.vel[1] == 0:
-                return (1, 0)
-            return self.agent.vel
+            new_vel = self.agent.vel
 
-        return new_vel
+        # velocity cannot be 0
+        if new_vel[0] == 0 and new_vel[1] == 0:
+            new_vel = (1, 0)
 
-    def get_state(self) -> State:
-        """
-        Get the current state of the game
-
-        :return: Current state
-        """
-        return State(self.agent.pos, self.agent.vel)
-
-    def get_state_with_racetrack(self) -> StateWithRacetrack:
-        """
-        Get the current state of the game including the racetrack
-
-        :return: Current state with racetrack
-        """
-        return StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
+        # set new velocity
+        self.agent.vel = new_vel
 
     def __get_start_cells(self) -> list[tuple[int, int]]:
         """
