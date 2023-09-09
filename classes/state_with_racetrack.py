@@ -7,10 +7,6 @@ class StateWithRacetrack:
         self.agent_position = agent_position
         self.agent_velocity = agent_velocity
 
-    def setAgent(self, new_pos: tuple[int, int], new_vel: tuple[int, int]):
-        self.agent_position = new_pos
-        self.agent_velocity = new_vel
-
     def __eq__(self, other):
         if isinstance(other, StateWithRacetrack):
             return self.agent_position == other.agent_position and \
