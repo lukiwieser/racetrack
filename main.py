@@ -86,6 +86,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, preliminary_results: int 
             if i % preliminary_results == 0 or i == 1:
                 test_game = Game(racetrack=track, random_state=43)
                 test_episode = play_single_game(test_game, copy.deepcopy(model))
+                test_episode.append((test_game.get_state(), Action(0, 0), 0))  # Append last state for drawing
                 visualizer.visualize_episode(track, test_episode,
                                              f"racetrack | training: n_episode={i}, n_steps={test_game.get_n_steps()}")
                 print(f"* {i} {test_game.get_n_steps()}")
@@ -118,20 +119,32 @@ def play_ai(track: np.ndarray, episodes_to_train: int, preliminary_results: int 
                 action = model.determine_best_action(state)
                 reward = game.step(action)
                 episode.append((state, action, reward))
+            episode.append((game.get_state(), Action(0, 0), 0))  # Append last state to episode for drawing
             visualizer.visualize_episode(track, episode, f"racetrack | testrun {i + 1}, n_steps={game.get_n_steps()}")
             game.reset()
 
 
 def main() -> None:
     # define arguments
-    parser = argparse.ArgumentParser(prog="racetrack", description="Train an AI to drive on a simple racetrack, by using reinforcement learning with monte carlo")
-    parser.add_argument('-p', '--playstyle', help="if the AI should play the game live (ai_interactive), or the game of the AI should be shown as static image (ai_static), or the user can play (user)", choices=["user", "ai_interactive", "ai_static"], default="ai_static")
-    parser.add_argument('-e', '--episodes-to-train', help="how many episodes to train the model", type=check_positive_int, default=3000)
+    parser = argparse.ArgumentParser(prog="racetrack",
+                                     description="Train an AI to drive on a simple racetrack, by using reinforcement learning with monte carlo")
+    parser.add_argument('-p', '--playstyle',
+                        help="if the AI should play the game live (ai_interactive), or the game of the AI should be shown as static image (ai_static), or the user can play (user)",
+                        choices=["user", "ai_interactive", "ai_static"], default="ai_static")
+    parser.add_argument('-e', '--episodes-to-train', help="how many episodes to train the model",
+                        type=check_positive_int, default=3000)
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-tr', '--track-random', help="generate a random racetrack with specified seed", type=check_positive_int, metavar='SEED')
-    group.add_argument('-tn', '--track-number', help="select a predefined racetrack, where the number represents the number of the map", type=int, choices=range(0, RacetrackList.get_tracks_count()))
-    parser.add_argument('-pr', '--preliminary-results', help="after how many episodes to show a preliminary result during training (only for ai_static)", type=check_positive_int)
-    parser.add_argument('-fr', '--final-results', help="how many final games to show after training (only for ai_static)", type=check_positive_int)
+    group.add_argument('-tr', '--track-random', help="generate a random racetrack with specified seed",
+                       type=check_positive_int, metavar='SEED')
+    group.add_argument('-tn', '--track-number',
+                       help="select a predefined racetrack, where the number represents the number of the map",
+                       type=int, choices=range(0, RacetrackList.get_tracks_count()))
+    parser.add_argument('-pr', '--preliminary-results',
+                        help="after how many episodes to show a preliminary result during training (only for ai_static)",
+                        type=check_positive_int)
+    parser.add_argument('-fr', '--final-results',
+                        help="how many final games to show after training (only for ai_static)",
+                        type=check_positive_int)
 
     # parse arguments
     args = parser.parse_args()
