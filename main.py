@@ -57,7 +57,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, preliminary_results: int 
     :param preliminary_results: After how many episodes to show preliminary results (aka do a test run). If `None`, then no preliminary results will be shown.
     """
 
-    if not playstyle_interactive:
+    if playstyle_interactive:
         preliminary_results = None
 
     model = ModelRLMC(random_state=42)
