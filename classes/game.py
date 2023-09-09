@@ -12,7 +12,7 @@ from .state_with_racetrack import StateWithRacetrack
 class Game:
     def __init__(self, racetrack: np.ndarray, random_state: None | int = None):
         """
-        Capsules all the game logic. Mainly contains the Environment and Agent.
+        Capsules all the game logic. Mainly contains the Environment (racetrack) and Agent (car).
 
         :param racetrack: the racetrack on which the game should be played
         :param random_state: Used for generating the randomness of the racetrack. Pass an int for reproducible output across multiple function calls
@@ -35,6 +35,9 @@ class Game:
         self.n_steps = 0
 
     def is_finished(self) -> bool:
+        """
+        Returns if the game is finished, which means that the agent reached the finish line.
+        """
         if self.agent.pos in self.__get_end_cells():
             return True
         return False
@@ -189,33 +192,18 @@ class Game:
         """
         return StateWithRacetrack(self.racetrack, self.agent.pos, self.agent.vel)
 
-    def __get_start_cells(self):
+    def __get_start_cells(self) -> list[tuple[int, int]]:
         """
-        Finds all start cells.
+        Gets the coordinates (x,y) for all start cells, aka the start-line.
 
-        :return: Returns all starting cells as a list of tuples, where each tuple represents one cell
+        :return: Returns end cells as tuples
         """
-        start_array = np.where(self.racetrack == 2)
-        return self.__convert(start_array)
+        return [tuple(coord) for coord in np.argwhere(self.racetrack == 2).tolist()]
 
-    def __get_end_cells(self):
+    def __get_end_cells(self) -> list[tuple[int, int]]:
         """
-        Finds all end cells.
+        Gets the coordinates (x,y) for all end cells, aka the finish-line.
 
-        :return: Returns all end cells as a list of tuples, where each tuple represents one cell
+        :return: Returns end cells as tuples
         """
-        end_array = np.where(self.racetrack == 3)
-        return self.__convert(end_array)
-
-    def __convert(self, input_tuple):
-        """
-        Converts a tuple of 2 ndarrays to a list of tuples. This is a help function to find start/end rectangles.
-        E.g. Input ([0,0,0],[4,5,6]) --> Output [(0,4),(0,5),(0,6)], where each tuple is one rectangle
-
-        :param input_tuple: the tuple
-        :return: Returns a list of tuples, where each tuple represents a rectangle
-        """
-        list = []
-        for i in range(len(input_tuple[0])):
-            list.append((input_tuple[0][i], input_tuple[1][i]))
-        return list
+        return [tuple(coord) for coord in np.argwhere(self.racetrack == 3).tolist()]
