@@ -26,24 +26,43 @@ First install the dependencies with:
 pip install -r requirements.txt
 ```
 
-The main program `main.py` can (optionally) be started with arguments:
+Then start the main program `main.py` with:
 
-- playstyle:
-  - `ai_static`: Train a model on one racetrack, and display 3 test runs as static images (default).
-  - `ai_interactive`: Train a model on one racetrack, and watch live as the trained model plays a game.
-  - `user`: Let the user play on one racetrack by applying inputs via the command line.
-- track:
-  - select a predefined racetrack with `--track-number 0`, where the number represents the number of the map (default)
-  - generate a random racetrack with `--track-random 42`, where the number is the seed of the random generator
-- episodes to train:
-  - select how many episodes to train the model with `--episodes-to-train 4000` 
-- help:
-  - show help message with `--help` 
+```console
+python main.py
+```
+
+You can use the following command-line arguments to customize the behaviour of the main program:
+
+- `--playstyle` or `-p`:
+  - Choose the AI's playstyle:
+    - `ai_static` (default): Train a model on one racetrack, and display test runs as static images.
+    - `ai_interactive`: Train a model on one racetrack, and watch the AI play a game in real-time.
+    - `user`: Enable the user to play the game interactively via the command line.
+- `--track-random` or `-tr`:
+  - Generate a random racetrack with the specified seed.
+  - Type: Positive integer.
+  - Mutually exclusive with `--track-number`.
+- `--track-number` or `-tn`:
+  - Select a predefined racetrack.
+  - Type: Integer (choose from available track numbers, use `--help` to see them).
+  - Mutually exclusive with `--track-random`.
+- `--episodes-to-train` or `-e`:
+  - Specify the number of episodes to train the AI model.
+  - Type: Positive integer (default 3000).
+- `--preliminary-results` or `-pr`: 
+  - Specify the number of episodes after which to show preliminary results during training.
+  - Only for `ai_static` playstyle
+- `--final-results` or `-fr`:
+  - Determine how many final games to display after training is complete.
+  - Only for `ai_static` playstyle
+- `--help` or `-h`:
+  - Show help message
 
 An example of this would be:
 
 ```console
-python main.py --playstyle ai_static --track-number 1
+python main.py -p ai_static -tr 42 -e 10000 -pr 1000 -fr 10
 ```
 
 Additionally, there is the jupyter notebook [model_analysis.ipynb](model_analysis.ipynb) to create exploratory statistics and plots.
