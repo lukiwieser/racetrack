@@ -146,6 +146,20 @@ class Game:
 
         :returns: True if invalid cells exist between the positions, otherwise False.
         """
+
+        # Examples if there are invalid cells between the positions:
+        # ░ are valid cells, representing the racetrack
+        # █ are invalid cells, representing the boundaries
+        # x are the two positions of the car (pos0 & pos1)
+        #
+        # █ █ █ █ █ █   █ █ █ █ █ █   █ █ █ █ █ █   █ █ █ █ █ █
+        # █ ░ ░ ░ ░ ░   █ ░ ░ ░ ░ ░   █ ░ ░ ░ ░ ░   █ ░ ░ ░ ░ ░
+        # █ ░ ░ x ░ ░   █ ░ ░ x ░ ░   █ ░ ░ x ░ ░   █ ░ ░ ░ x ░
+        # █ ░ x █ █ █   █ ░ ░ █ █ █   █ ░ ░ █ █ █   █ ░ ░ █ █ █
+        # █ ░ ░ █       █ ░ x █       █ ░ ░ █       █ ░ x █
+        # █ ░ ░ █       █ ░ ░ █       █ ░ x █       █ ░ ░ █
+        # => False      => False      => True      => True
+
         x0, y0 = pos0
         x1, y1 = pos1
 
