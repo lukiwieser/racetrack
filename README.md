@@ -176,13 +176,14 @@ During testing the greedy model (ε=0) has not only worse rewards but also a hig
 
 ## Lessons Learned
 
-- exploration is good (ε=10% performs better than 0%, when testing!)
-- extra penalties can be good (e.g. if out-of-track)
-- be aware of randomness (we unintentionally trained 10x with the same seed…)
-- long training times (especially on complex maps)
-- approach is limited (this style of q-learning seems to be limited e.g. saving lots of states, struggles with simple maps)
-- it is quite a creative field (e.g. what rewards to choose, how to structure the algorithms)
-- reinforcement learning is broader than expected e.g.:
+Here are some key takeaways from our project:
+- Exploration is beneficial (ε=10% performs better than 0%, when testing!)
+- Extra penalties can imrpove performance (e.g. for going off-track)
+- Be mindful of randomness (we unintentionally trained 10x with the same seed…)
+- Long training times (especially on complex maps)
+- The approach is limited (this style of q-learning seems to be limited e.g. saving lots of states, struggles with simple maps)
+- This field and task is quite a creative (e.g. what rewards to choose, how to structure the algorithms)
+- Reinforcement learning is broader than expected e.g.:
   - [Tokamak Nuclear Fusion (plasma controller)](https://www.deepmind.com/publications/magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
   - [ChatGPT (RLHF)](https://huggingface.co/blog/rlhf)
 
