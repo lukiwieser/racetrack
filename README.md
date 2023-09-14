@@ -184,7 +184,9 @@ Here are some key takeaways from our project:
 - The approach is limited (this style of q-learning seems to be limited e.g. saving lots of states, struggles with simple maps)
 - This field and task is quite a creative (e.g. what rewards to choose, how to structure the algorithms)
 - Reinforcement learning is broader than expected e.g.:
-  - [Tokamak Nuclear Fusion (plasma controller)](https://www.deepmind.com/publications/magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
+  - [Nuclear Fusion (control tokamak plasmas)](https://www.deepmind.com/publications/magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
+  - [Cooling Datacenters](https://arxiv.org/pdf/2211.07357.pdf)
+  - [Designing Chips](https://doi.org/10.1038/s41586-021-03544-w)
   - [ChatGPT (RLHF)](https://huggingface.co/blog/rlhf)
 
 
