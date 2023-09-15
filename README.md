@@ -73,7 +73,6 @@ Additionally, there is the jupyter notebook [model_analysis.ipynb](model_analysi
 Consider a racetrack with discrete cells, like in *Figure 1*.
 The goal for the racecar (red) is to drive as fast from start line (yellow) to the finish line (green), without crashing into the walls (white).
 
-
 Each game begins at a random position on the start line.
 At each timestamp the car can choose an action, to increase/decrease its velocity by 1 in one direction, or do nothing.
 During training, there is a 10% chance that the chosen action is ignored.
@@ -81,61 +80,64 @@ If the car crashed into the wall its position is reset to the start line.
 
 ## Implementation
 
-Reinforcement Learning is a technique where an agent (aka model aka AI) takes actions, and receives a reward as feedback.
-By playing lots of games it learns which actions are best for which state.
+### Fundamentals
 
-Specifically, the model plays an episode (aka game), and saves for each step the state, action, and reward.
-After the episode it computes the discounted average reward for each state-action pair, and saves them.
-This expected reward is the reward that the agent can expect to get at the end of the game if it is in the specified state and applies the specified action.
-And this is how the model learns! 
-Since it can look up for each state, all actions and their expected reward, and choose the action with the highest reward.
+*Reinforcement Learning* is a technique where an AI (also referred as model or agent) takes actions, and receives a reward as feedback.
+The AI's goal is to maximize the reward. 
+By playing lots of games it learns which actions are the best.
 
-This approach is called *Q-Learning*.
+*Q-Learning*, is a specific type of Reinforcement Learning.
+It is model free, meaning it doesn't require prior knowledge of the game rules.
+In the context of the racetrack problem, this means the AI does not know the rules of the game, and instead learns them by trial and error.
+"Q" refers to the function that stores the expected reward for each state-action pair calculated by the algorithm
+
+*Q-Learning with Monte Carlo*, is a specific form of Q-learning, and our chosen approach.
+The AI learns from sampled experience, thus it plays only a subset of all possible ways of playing a game.
+Learning occur after playing an entire game episode.
+A similar but different approach is temporal difference learning, where the AI learns after each individual step rather than only after completing a full game.
 
 ### Architecture
 
 ![program-architecture](docs/program-architecture.png)
 
-The game is started with a predefined or randomly generated racetrack.
+The game starts on a predefined or randomly generated racetrack.
 
-Then the AI takes an action to influence the velocity and gets the new state & a matching reward back.
-By playing lots of games it learns which actions are best for which state.
+The AI takes an action to influence the velocity and receives the new state & corresponding reward.
+By playing lots of games the AI learns which actions are best for each state.
 
 The Visualizer can visualize the game live as the AI plays or shows a summary of the finished game.
 
 ### Model
 
-We use an optimistic first-visit monte carlo model, with an epsilon greedy approach:
+We use an optimistic first-visit monte carlo model, with an epsilon greedy strategy.
+Here's a breakdown of its key characteristics:
 
-* optimistic (prioritize actions with unknown rewards, over actions with known rewards)
-* first visit (if the same state-action pair occurs multiple times in one episode, just take the first into account)
-* monte carlo (the agent learns from sample experience aka it plays only a subset of all possible ways of playing a game)
-* epsilon greedy (during training pick with a 10% chance a random action instead of the best action)
+* Optimistic: Prioritizes actions with unknown rewards, over actions with known rewards.
+* First visit: Considers only the first occurrence of a state-action pair within an episode.
+* Monte Carlo: Learns from sample experience, thus it plays only a subset of all possible ways of playing a game.
+* Epsilon greedy: Occasionally selects a random action (10% chance) during training instead of the best action.
 
-Environment:
-* is noisy during training (i.e. 10% chance of ignoring action)
-* random position on the start line
+Environment specifics:
+* During training, there is noise (10% chance of ignoring an action).
+* The car starts at a random position on the starting line.
 
-Rewards:
-* -1 for each step
-* -5 if out of track (seems to be beneficial for complex tracks)
+Reward scheme:
+* -1 for each step taken
+* -5 for going off the track (beneficial for complex tracks)
 
-Keep in mind that the model and environment/game have randomness in them.
+Keep in mind that randomness plays a role in both the model and environment.
 
 ### Racetrack
 
-The racetrack is internally represented by a 2-dimensional numpy array. The elements of this array are integers, and specify the type of the cell:
+The racetrack is internally represented by a 2-dimensional numpy array, with integer values indicating cell types
 - 0 = OFF_TRACK
 - 1 = ON_TRACK
 - 2 = START
 - 3 = FINISH
 
-There are predefined racetracks in `classes/racetrack_list.py` and 
-the option to randomly create racetracks with a Generator.
-
-Racetracks are generated by choosing a given number of random points on a grid.
-Then the start and finish points are selected randomly. 
-Finally, the points are connected with lines using opencv.
+Racetracks can be predefined or randomly generated using a generator.
+Predefined tracks are defined in `classes/racetrack_list.py`.
+Random tracks are created by choosing random points on a grid, followed by the randomly assigning the start and finish points. Lines are then drawn to connect these points using OpenCV.
 
 
 ## Results
