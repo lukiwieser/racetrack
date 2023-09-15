@@ -32,7 +32,7 @@ Then start the main program `main.py` with:
 python main.py
 ```
 
-You can use the following command-line arguments to customize the behaviour of the main program:
+You can customize the behavior of the main program using the following command-line arguments:
 
 - `--playstyle` or `-p`:
   - Choose the AI's playstyle:
@@ -71,12 +71,12 @@ Additionally, there is the jupyter notebook [model_analysis.ipynb](model_analysi
 ## Scenario
 
 Consider a racetrack with discrete cells, like in *Figure 1*.
-The goal for the racecar (red) is to drive as fast from start line (yellow) to the finish line (green), without crashing into the walls (white).
+The goal for the racecar (red) is to drive as fast from the start line (yellow) to the finish line (green), without crashing into the walls (white).
 
 Each game begins at a random position on the start line.
 At each timestamp the car can choose an action, to increase/decrease its velocity by 1 in one direction, or do nothing.
 During training, there is a 10% chance that the chosen action is ignored.
-If the car crashed into the wall its position is reset to the start line.
+If the car crashes into the wall its position is reset to a random position at the start line.
 
 ## Implementation
 
@@ -87,13 +87,13 @@ The AI's goal is to maximize the reward.
 By playing lots of games it learns which actions are the best.
 
 *Q-Learning*, is a specific type of Reinforcement Learning.
-It is model free, meaning it doesn't require prior knowledge of the game rules.
+It is model-free, meaning it doesn't require prior knowledge of the game rules.
 In the context of the racetrack problem, this means the AI does not know the rules of the game, and instead learns them by trial and error.
 "Q" refers to the function that stores the expected reward for each state-action pair calculated by the algorithm
 
 *Q-Learning with Monte Carlo*, is a specific form of Q-learning, and our chosen approach.
 The AI learns from sampled experience, thus it plays only a subset of all possible ways of playing a game.
-Learning occur after playing an entire game episode.
+Learning occurs after playing an entire game episode.
 A similar but different approach is temporal difference learning, where the AI learns after each individual step rather than only after completing a full game.
 
 ### Architecture
@@ -125,7 +125,7 @@ Reward scheme:
 * -1 for each step taken
 * -5 for going off the track (beneficial for complex tracks)
 
-Keep in mind that randomness plays a role in both the model and environment.
+Keep in mind that randomness plays a role in both the model and the environment.
 
 ### Racetrack
 
@@ -176,15 +176,16 @@ During testing trained models, the ε=0.1 model consistently performs better, so
 
 During testing the greedy model (ε=0) has not only worse rewards but also a higher variance.
 
+
 ## Lessons Learned
 
 Here are some key takeaways from our project:
-- Exploration is beneficial (ε=10% performs better than 0%, when testing!)
-- Extra penalties can imrpove performance (e.g. for going off-track)
+- Exploration is beneficial (epsilon-greedy performs better than just greedy, when testing!)
+- Extra penalties can improve performance (e.g. for going off-track)
 - Be mindful of randomness (we unintentionally trained 10x with the same seed…)
 - Long training times (especially on complex maps)
 - The approach is limited (this style of q-learning seems to be limited e.g. saving lots of states, struggles with simple maps)
-- This field and task is quite a creative (e.g. what rewards to choose, how to structure the algorithms)
+- This field and task is quite creative (e.g. what rewards to choose, how to structure the algorithms)
 - Reinforcement learning is broader than expected e.g.:
   - [Nuclear Fusion (control tokamak plasmas)](https://www.deepmind.com/publications/magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
   - [Cooling Datacenters](https://arxiv.org/pdf/2211.07357.pdf)
