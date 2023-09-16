@@ -168,17 +168,21 @@ This shows that looking at one game just not shows the whole picture.
 
 Replicate with: `-tr 42 -e 5000 -fr 4`
 
-### Reward per Episode
+### Analyzing Reward per Episode
 
-We measured rewards for games (aka episodes) played by 2 models.
-The greedy model always chooses the best action (ε=0), while the exploration model takes a random action with a 10% chance (ε=0.1).
+We measured rewards for games (aka episodes) played by 2 models:
+- The greedy model always chooses the best action (ε=0)
+- The epsilon-greedy model takes a random action with a 10% chance (ε=0.1)
 
-We measured the median reward of multiple models, to limit the influence of randomness, and smoothed the plots with lowess.
+In this context higher rewards indicate that the game was finished faster.
+
+We measured the median reward of multiple models, to limit the influence of randomness, and smoothed the plots with lowess, for more clarity.
 The source code is in [model_analysis.ipynb](model_analysis.ipynb).
 
 ![reward-per-episode-during-training](docs/reward-per-episode-during-training.png)
 
-During training the ε=0 model performs better. This is a bit unexpected to us since we expected that exploring more options (ε=0.1) leads to better rewards.
+
+During training the ε=0 model performs better. This is a bit unexpected to us since we expected that exploring more options (ε=0.1) leads to better rewards. Although this also could be artifact since we measure the rewards of the trained games. 
 Also, the more episodes are played, the better the models become.
 
 ![reward-per-episode-during-testing](docs/reward-per-episode-during-testing.png)
