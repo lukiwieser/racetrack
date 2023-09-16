@@ -144,16 +144,29 @@ Random tracks are created by choosing random points on a grid, followed by the r
 
 ### Visualize Played Games
 
-![](docs/model-during-training.png)
+![training-model-complex-map](docs/training-progress-tr-42.png)
 
-Here we see how a model performs during training, after 0, 500, 2500, and 500 episodes are played.
-With more episodes played, the model gets better and reaches the finish line (green).
-Keep in mind that a model with more games played can also perform worse, due to randomly having a worse starting position.
+Here we see how a model performs after training a certain number of episodes.
+Initially, the model performs quite bad and does not reach the finish line (green).
+As more episodes are played, the model's performance improves, and it's path gets smoother.
 
-![](docs/trained-model-map-b.png)
+Replicate with: `-tr 42 -e 30000 -pr 1000 -fr 0`
 
-Here we see 3 games of a trained model on the same racetrack.
-Due to the random nature of the game, the path is always a bit different.
+![training-model-simple-map](docs/training-progress-tn-1.png)
+
+Here we see the training progress on a simpler racetrack.
+The model quickly learns to drive to the finish line, but requires substantial training time to achieve improvements, eventually appearing to reach a plateau.
+
+Replicate with: `-tn 1 -e 50000 -pr 500 -fr 0`
+
+![training-model-complex-map-testruns](docs/testruns-tr-42.png)
+
+Here are 3 games of a fully trained model. 
+Due to the random nature of the game, the starting positions vary.
+The same model successfully reaches the finish line with 3 games, but with onw instance (Testrun 1) it gets stuck in a loop, failing to reach the finish line.
+This shows that looking at one game just not shows the whole picture.
+
+Replicate with: `-tr 42 -e 5000 -fr 4`
 
 ### Reward per Episode
 
