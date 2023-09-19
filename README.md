@@ -163,8 +163,8 @@ Replicate with: `-tn 1 -e 50000 -pr 500 -fr 0`
 
 Here are 3 games of a fully trained model. 
 Due to the random nature of the game, the starting positions vary.
-The same model successfully reaches the finish line with 3 games, but with onw instance (Testrun 1) it gets stuck in a loop, failing to reach the finish line.
-This shows that looking at one game just not shows the whole picture.
+The same model successfully reaches the finish line in three games (Testrun 2,3 and 4), but with one instance (Testrun 1) it gets stuck in a loop, failing to reach the finish line.
+This demonstrates that looking at one game just not shows the whole picture.
 
 Replicate with: `-tr 42 -e 5000 -fr 4`
 
@@ -180,7 +180,6 @@ We measured the median reward of multiple models, to limit the influence of rand
 The source code is in [model_analysis.ipynb](model_analysis.ipynb).
 
 ![reward-per-episode-during-training](docs/reward-per-episode-during-training.png)
-
 
 During training the ε=0 model performs better. This is a bit unexpected to us since we expected that exploring more options (ε=0.1) leads to better rewards. Although this also could be artifact since we measure the rewards of the trained games. 
 Also, the more episodes are played, the better the models become.
