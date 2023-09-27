@@ -35,9 +35,10 @@ python main.py
 You can customize the behavior of the main program using the following command-line arguments:
 
 - `--playstyle` or `-p`:
-  - Choose the AI's playstyle:
+  - Choose the AI's playstyle
+  - Options:
     - `ai_static` (default): Train a model on one racetrack, and display test runs as static images.
-    - `ai_interactive`: Train a model on one racetrack, and watch the AI play a game in real-time.
+    - `ai_interactive`: Train a model on one racetrack, and watch the AI play a game in real time.
     - `user`: Enable the user to play the game interactively via the command line.
 - `--track-random` or `-tr`:
   - Generate a random racetrack with the specified seed.
@@ -71,12 +72,12 @@ Additionally, there is the jupyter notebook [model_analysis.ipynb](model_analysi
 ## Scenario
 
 Consider a racetrack with discrete cells, like in *Figure 1*.
-The goal for the racecar (red) is to drive as fast from the start line (yellow) to the finish line (green), without crashing into the walls (white).
+The goal for the racecar (red) is to drive as fast as possible from the start line (yellow) to the finish line (green), without crashing into the walls (white).
 
 Each game begins at a random position on the start line.
-At each timestamp the car can choose an action, to increase/decrease its velocity by 1 in one direction, or do nothing.
+At each timestamp the car can choose an action, to increase or decrease its velocity by 1 in any direction, or do nothing.
 During training, there is a 10% chance that the chosen action is ignored.
-If the car crashes into the wall its position is reset to a random position at the start line.
+If the car crashes into the wall its position is reset to a random position on the start line.
 
 ## Implementation
 
@@ -94,7 +95,7 @@ In the context of the racetrack problem, this means the AI does not know the rul
 *Q-Learning with Monte Carlo*, is a specific form of Q-learning, and our chosen approach.
 The AI learns from sampled experience, thus it plays only a subset of all possible ways of playing a game.
 Learning occurs after playing an entire game episode.
-A similar but different approach is temporal difference learning, where the AI learns after each individual step rather than only after completing a full game.
+A similar approach that we do not use in this project is *temporal difference learning*, where the AI learns after each individual step rather than only after completing a full game.
 
 ### Architecture
 
@@ -137,7 +138,7 @@ The racetrack is internally represented by a 2-dimensional numpy array, with int
 
 Racetracks can be predefined or randomly generated using a generator.
 Predefined tracks are defined in `classes/racetrack_list.py`.
-Random tracks are created by choosing random points on a grid, followed by the randomly assigning the start and finish points. Lines are then drawn to connect these points using OpenCV.
+Random tracks are created by choosing random points on a grid, followed by randomly assigning the start and finish points. Lines are then drawn to connect these points using OpenCV.
 
 
 ## Results
@@ -148,7 +149,7 @@ Random tracks are created by choosing random points on a grid, followed by the r
 
 Here we see how a model performs after training a certain number of episodes.
 Initially, the model performs quite bad and does not reach the finish line (green).
-As more episodes are played, the model's performance improves, and it's path gets smoother.
+As more episodes are played, the model's performance improves, and its path gets smoother.
 
 Replicate with: `-tr 42 -e 30000 -pr 1000 -fr 0`
 
@@ -164,7 +165,7 @@ Replicate with: `-tn 1 -e 50000 -pr 500 -fr 0`
 Here are 3 games of a fully trained model. 
 Due to the random nature of the game, the starting positions vary.
 The same model successfully reaches the finish line in three games (Testrun 2,3 and 4), but with one instance (Testrun 1) it gets stuck in a loop, failing to reach the finish line.
-This demonstrates that looking at one game just not shows the whole picture.
+This demonstrates that looking at one game alone just not shows the whole picture.
 
 Replicate with: `-tr 42 -e 5000 -fr 4`
 
