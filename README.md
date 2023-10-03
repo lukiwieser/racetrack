@@ -35,7 +35,7 @@ python main.py
 You can customize the behavior of the main program using the following command-line arguments:
 
 - `--playstyle` or `-p`:
-  - Choose the AI's playstyle
+  - Choose the AI's playstyle.
   - Options:
     - `ai_static` (default): Train a model on one racetrack, and display test runs as static images.
     - `ai_interactive`: Train a model on one racetrack, and watch the AI play a game in real time.
@@ -53,12 +53,12 @@ You can customize the behavior of the main program using the following command-l
   - Type: Positive integer (default 3000).
 - `--preliminary-results` or `-pr`: 
   - Specify the number of episodes after which to show preliminary results during training.
-  - Only for `ai_static` playstyle
+  - Only for `ai_static` playstyle.
 - `--final-results` or `-fr`:
   - Determine how many final games to display after training is complete.
-  - Only for `ai_static` playstyle
+  - Only for `ai_static` playstyle.
 - `--help` or `-h`:
-  - Show help message
+  - Show help message.
 
 An example of this would be:
 
@@ -90,7 +90,7 @@ By playing lots of games it learns which actions are the best.
 *Q-Learning*, is a specific type of Reinforcement Learning.
 It is model-free, meaning it doesn't require prior knowledge of the game rules.
 In the context of the racetrack problem, this means the AI does not know the rules of the game, and instead learns them by trial and error.
-"Q" refers to the function that stores the expected reward for each state-action pair calculated by the algorithm
+"Q" refers to the function that stores the expected reward for each state-action pair calculated by the algorithm.
 
 *Q-Learning with Monte Carlo*, is a specific form of Q-learning, and our chosen approach.
 The AI learns from sampled experience, thus it plays only a subset of all possible ways of playing a game.
@@ -123,14 +123,14 @@ Environment specifics:
 * The car starts at a random position on the starting line.
 
 Reward scheme:
-* -1 for each step taken
-* -5 for going off the track (beneficial for complex tracks)
+* -1 for each step taken.
+* -5 for going off the track (beneficial for complex tracks).
 
 Keep in mind that randomness plays a role in both the model and the environment.
 
 ### Racetrack
 
-The racetrack is internally represented by a 2-dimensional numpy array, with integer values indicating cell types
+The racetrack is internally represented by a 2-dimensional numpy array, with integer values indicating cell types:
 - 0 = OFF_TRACK
 - 1 = ON_TRACK
 - 2 = START
