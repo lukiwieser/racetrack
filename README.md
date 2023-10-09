@@ -145,6 +145,8 @@ Random tracks are created by choosing random points on a grid, followed by rando
 
 ### Visualize Played Games
 
+#### Training Process on Complex Racetrack
+
 ![training-model-complex-map](docs/training-progress-tr-42.png)
 
 Here we see how a model performs after training a certain number of episodes.
@@ -153,12 +155,16 @@ As more episodes are played, the model's performance improves, and its path gets
 
 Replicate with: `-tr 42 -e 30000 -pr 1000 -fr 0`
 
+#### Training Process on Simple Racetrack
+
 ![training-model-simple-map](docs/training-progress-tn-1.png)
 
 Here we see the training progress on a simpler racetrack.
 The model quickly learns to drive to the finish line, but requires substantial training time to achieve improvements, eventually appearing to reach a plateau.
 
 Replicate with: `-tn 1 -e 50000 -pr 500 -fr 0`
+
+#### Testruns on Complex Racetrack
 
 ![training-model-complex-map-testruns](docs/testruns-tr-42.png)
 
