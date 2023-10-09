@@ -180,24 +180,36 @@ In this context higher rewards indicate that the game was finished faster.
 We measured the median reward of multiple models, to limit the influence of randomness, and smoothed the plots with lowess, for more clarity.
 The source code is in [model_analysis.ipynb](model_analysis.ipynb).
 
-![reward-per-episode-during-training](docs/reward-per-episode-during-training.png)
+#### Simple Racetrack
+
+First we analyze the rewards on a simpler racetrack (track number 1).
+
+![reward-per-episode-training-progress-tn-1](docs/reward-per-episode-training-progress-tn-1.png)
 
 During training the ε=0 model performs better. This is a bit unexpected to us since we expected that exploring more options (ε=0.1) leads to better rewards. Although this also could be artifact since we measure the rewards of the trained games. 
 Also, the more episodes are played, the better the models become.
 
-![reward-per-episode-during-testing](docs/reward-per-episode-during-testing.png)
+![reward-per-episode-testing-tn-1](docs/reward-per-episode-testing-tn-1.png)
 
-During testing trained models, the ε=0.1 model consistently performs better, so exploration seems to pay off.
+When testing the trained models, both models perform similar on average. The greedy model (e=0%) has a higher variance.
 
-![reward-per-episode-during-testing-with-variance](docs/reward-per-episode-during-testing-with-variance.png)
+#### Complex Racetrack
 
-During testing the greedy model (ε=0) has not only worse rewards but also a higher variance.
+Next we analyze the rewards on more complex racetrack (random track with seed 42).
 
+![reward-per-episode-training-progress-tr-42](docs/reward-per-episode-training-progress-tr-42.png)
+
+During training the greedy model seems to reach a plato, while the epsilon-greedy model starts with worse rewards, but after about 10000 episodes it performs better.
+
+![reward-per-episode-testing-tr-42](docs/reward-per-episode-testing-tr-42.png)
+
+When testing the trained models, the epsilon greedy performs much better. 
+On average the greedy model is not too bad, but there seem to be a lot of cases where the model performs very bad, an even some cases where to model fails to reach the finish line, even after being trained for 50000 episodes.
 
 ## Lessons Learned
 
 Here are some key takeaways from our project:
-- Exploration is beneficial (epsilon-greedy performs better than just greedy, when testing!)
+- Exploration is beneficial (epsilon-greedy performs better than just greedy, especially on complex maps, and interestingly is sometimes worse just during training)
 - Extra penalties can improve performance (e.g. for going off-track)
 - Be mindful of randomness (we unintentionally trained 10x with the same seed…)
 - Long training times (especially on complex maps)
