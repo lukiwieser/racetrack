@@ -220,6 +220,7 @@ Here are some key takeaways from our project:
 - Be mindful of randomness (we unintentionally trained 10x with the same seed…)
 - Long training times (especially on complex maps)
 - The approach is limited (this style of q-learning seems to be limited e.g. saving lots of states, struggles with simple maps)
+- Much to explore (for example: different values of epsilon, test on much more tracks, more advanced algorithms e.g. give the agent vision of it’s surroundings)
 - This field and task is quite creative (e.g. what rewards to choose, how to structure the algorithms)
 - Reinforcement learning is broader than expected e.g.:
   - [Nuclear Fusion (control tokamak plasmas)](https://www.deepmind.com/publications/magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
