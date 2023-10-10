@@ -2,7 +2,7 @@
 
 Train an AI to drive on a simple racetrack, by using reinforcement learning with monte carlo.
 
-![model-with-optimal-policies](docs/model-with-optimal-policies.png)
+![intro-picture](docs/intro-picture.png)
 *Figure 1: Example trajectory of a trained AI (red) on a racetrack*
 
 
