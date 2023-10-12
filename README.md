@@ -3,7 +3,7 @@
 Train an AI to drive on a simple racetrack, by using reinforcement learning with monte carlo.
 
 ![intro-picture](docs/intro-picture.png)
-*Figure 1: Example trajectory of a trained AI (red) on a racetrack*
+*Figure 1: Example trajectory of a trained AI (red) on a racetrack (black)*
 
 
 ## Contents
@@ -32,7 +32,7 @@ Then start the main program `main.py` with:
 python main.py
 ```
 
-You can customize the behavior of the main program using the following command-line arguments:
+You can customize the main program's behavior using the following command-line arguments:
 
 - `--playstyle` or `-p`:
   - Choose the AI's playstyle.
@@ -83,19 +83,19 @@ If the car crashes into the wall its position is reset to a random position on t
 
 ### Fundamentals
 
-*Reinforcement Learning* is a technique where an AI (also referred as model or agent) takes actions, and receives a reward as feedback.
-The AI's goal is to maximize the reward. 
-By playing lots of games it learns which actions are the best.
+*Reinforcement Learning* is a technique where an AI (also referred as model or agent) takes actions, and receives rewards as feedback.
+The AI's goal is to maximize the reward.
+It learns which actions are the best by playing lots of games. 
 
-*Q-Learning*, is a specific type of Reinforcement Learning.
+*Q-Learning* is a specific type of Reinforcement Learning.
 It is model-free, meaning it doesn't require prior knowledge of the game rules.
 In the context of the racetrack problem, this means the AI does not know the rules of the game, and instead learns them by trial and error.
 "Q" refers to the function that stores the expected reward for each state-action pair calculated by the algorithm.
 
-*Q-Learning with Monte Carlo*, is a specific form of Q-learning, and our chosen approach.
+*Q-Learning with Monte Carlo* is a specific form of Q-learning, and our chosen approach.
 The AI learns from sampled experience, thus it plays only a subset of all possible ways of playing a game.
 Learning occurs after playing an entire game episode.
-A similar approach that we do not use in this project is *temporal difference learning*, where the AI learns after each individual step rather than only after completing a full game.
+A similar approach, that we do not use in this project, is *temporal difference learning*, where the AI learns after each individual step rather than after completing a full game.
 
 ### Architecture
 
@@ -150,7 +150,7 @@ Random tracks are created by choosing random points on a grid, followed by rando
 ![training-model-complex-map](docs/training-progress-tr-42.png)
 
 Here we see how a model performs after training a certain number of episodes.
-Initially, the model performs quite bad and does not reach the finish line (green).
+Initially, the model performs quite badly and does not reach the finish line (green).
 As more episodes are played, the model's performance improves, and its path gets smoother.
 
 Replicate with: `-tr 42 -e 30000 -pr 1000 -fr 0`
@@ -171,7 +171,7 @@ Replicate with: `-tn 1 -e 50000 -pr 500 -fr 0`
 Here are 3 games of a fully trained model. 
 Due to the random nature of the game, the starting positions vary.
 The same model successfully reaches the finish line in three games (Testrun 2,3 and 4), but with one instance (Testrun 1) it gets stuck in a loop, failing to reach the finish line.
-This demonstrates that looking at one game alone just not shows the whole picture.
+This demonstrates that looking at one game alone just doesn't show the whole picture.
 
 Replicate with: `-tr 42 -e 5000 -fr 4`
 
@@ -181,9 +181,9 @@ We measured rewards for games (aka episodes) played by 2 models:
 - The greedy model always chooses the best action (ε=0)
 - The epsilon-greedy model takes a random action with a 10% chance (ε=0.1)
 
-In this context higher rewards indicate that the game was finished faster.
+In this context higher, rewards indicate that the game was finished faster.
 
-We measured the median reward of multiple models, to limit the influence of randomness, and smoothed the plots with lowess, for more clarity.
+We measured the median reward of multiple models, to limit the influence of randomness, and smoothed the lineplots with lowess, for more clarity.
 The source code is in [model_analysis.ipynb](model_analysis.ipynb).
 
 #### Simple Racetrack
@@ -192,25 +192,28 @@ First we analyze the rewards on a simpler racetrack (track number 1).
 
 ![reward-per-episode-training-progress-tn-1](docs/reward-per-episode-training-progress-tn-1.png)
 
-During training the ε=0 model performs better. This is a bit unexpected to us since we expected that exploring more options (ε=0.1) leads to better rewards. Although this also could be artifact since we measure the rewards of the trained games. 
-Also, the more episodes are played, the better the models become.
+During training the greedy model (ε=0) performs better. 
+This is a bit unexpected to us since we expected that exploring more options (ε=0.1) would lead to higher rewards.
+Additionally, both models improve as more episodes are played
 
 ![reward-per-episode-testing-tn-1](docs/reward-per-episode-testing-tn-1.png)
 
-When testing the trained models, both models perform similar on average. The greedy model (e=0%) has a higher variance.
+When testing the trained models, both models perform similarly on average. 
+Although the greedy model (e=0%) has a higher variance.
 
 #### Complex Racetrack
 
-Next we analyze the rewards on more complex racetrack (random track with seed 42).
+Next we analyze the rewards on a more complex racetrack (random track with seed 42).
 
 ![reward-per-episode-training-progress-tr-42](docs/reward-per-episode-training-progress-tr-42.png)
 
-During training the greedy model seems to reach a plato, while the epsilon-greedy model starts with worse rewards, but after about 10000 episodes it performs better.
+During training, the greedy model appears to reach a plateau, while the epsilon-greedy model steadily improves and consistently outperforms the greedy model after around 10000 episodes.
 
 ![reward-per-episode-testing-tr-42](docs/reward-per-episode-testing-tr-42.png)
 
-When testing the trained models, the epsilon greedy performs much better. 
-On average the greedy model is not too bad, but there seem to be a lot of cases where the model performs very bad, an even some cases where to model fails to reach the finish line, even after being trained for 50000 episodes.
+When testing the trained models, the epsilon-greedy model outperforms the greedy model. 
+On average, the greedy model is nearly as good as the epsilon-greedy.
+However, there seem to be many cases where the greedy model performs very badly, sometimes even failing to reach the finish line.
 
 ## Lessons Learned
 
@@ -220,7 +223,7 @@ Here are some key takeaways from our project:
 - Be mindful of randomness (we unintentionally trained 10x with the same seed…)
 - Long training times (especially on complex maps)
 - The approach is limited (this style of q-learning seems to be limited e.g. saving lots of states, struggles with simple maps)
-- Much to explore (for example: different values of epsilon, test on much more tracks, more advanced algorithms e.g. give the agent vision of it’s surroundings)
+- There is much to explore (e.g. different values of epsilon, testing many more tracks, more advanced algorithms like giving the agent vision of its surroundings)
 - This field and task is quite creative (e.g. what rewards to choose, how to structure the algorithms)
 - Reinforcement learning is broader than expected e.g.:
   - [Nuclear Fusion (control tokamak plasmas)](https://www.deepmind.com/publications/magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
@@ -234,4 +237,4 @@ Here are some key takeaways from our project:
 This project was created by students as part of a lecture at the *Vienna University of Technology*.
 It is inspired by an exercise in the book *Reinforcement Learning: An Introduction by Andrew Barto and Richard S. Sutton* on page 111.
 
-Negar Alinaghi, Benjamin Probst, Lukas Wieser • 14.08.2023
+Negar Alinaghi, Benjamin Probst, Lukas Wieser • 12.10.2023
