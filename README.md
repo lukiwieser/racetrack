@@ -54,9 +54,11 @@ You can customize the main program's behavior using the following command-line a
   - Type: Positive integer (default 3000).
 - `--preliminary-results` or `-pr`: 
   - Specify the number of episodes after which to show preliminary results during training.
+  - Type: Positive integer.
   - Only for `ai_static` playstyle.
 - `--final-results` or `-fr`:
-  - Determine how many final games to display after training is complete.
+  - Determine how many final games to display after training is completed.
+  - Type: Positive integer (default 3).
   - Only for `ai_static` playstyle.
 - `--help` or `-h`:
   - Show the help message.
