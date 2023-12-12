@@ -1,6 +1,6 @@
 # Racetrack
 
-Train an AI to drive on a simple racetrack, by using reinforcement learning with monte carlo.
+Train an AI to drive on a simple racetrack, by using reinforcement learning with Q-Learning and Monte Carlo.
 
 ![intro-picture](docs/intro-picture.png)
 
@@ -98,7 +98,10 @@ In the context of the racetrack problem, this means the AI does not know the rul
 *Q-Learning with Monte Carlo* is a specific form of Q-learning, and our chosen approach.
 The AI learns from sampled experience, thus it plays only a subset of all possible ways of playing a game.
 Learning occurs after playing an entire game (also referred as episode).
-A similar approach, not used in this project is *temporal difference learning*, where the AI learns after each individual step rather than after completing a full game.
+A similar approach, not used in this project is *Temporal Difference Learning*, where the AI learns after each individual step rather than after completing a full game.
+
+Furthermore, there are also more sophisticated and powerful reinforcement learning techniques,
+including *Deep Q-Learning* and *Policy Gradient Methods* such as *Proximal Policy Optimization(PPO)*.
 
 ### Architecture
 
