@@ -5,10 +5,10 @@ import time
 import numpy as np
 
 from classes.action import Action
+from classes.agent import Agent
 from classes.episode_visualizer import EpisodeVisualizer
 from classes.game import Game
 from classes.interactive_visualizer import InteractiveVisualizer
-from classes.model import ModelRLMC
 from classes.racetrack_list import RacetrackList
 from classes.state import State
 from classes.utils import check_positive_int, get_track
@@ -36,11 +36,11 @@ def play_user(track: np.ndarray) -> None:
     print("* You reached the finish line!")
 
 
-def play_single_game(game: Game, model: ModelRLMC) -> list[tuple[State, Action, int]]:
+def play_single_game(game: Game, agent: Agent) -> list[tuple[State, Action, int]]:
     episode: list[tuple[State, Action, int]] = []
     while not game.is_finished() and game.get_n_steps() < 1000:
         state = game.get_state()
-        action = model.determine_best_action(state)
+        action = agent.determine_best_action(state)
         reward = game.step(action)
         episode.append((state, action, reward))
     return episode
@@ -52,7 +52,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, preliminary_results: int 
     Train an AI on a racetrack, and then watch it play.
 
     :param track: The racetrack for the game
-    :param episodes_to_train: How many episodes to train the model
+    :param episodes_to_train: How many episodes to train the agent
     :param playstyle_interactive: If the game that AI plays should be shown life (aka interactively), or if the whole game should be shown in one static image (not interactively)
     :param preliminary_results: After how many episodes to show preliminary results (aka do a test run). If `None`, then no preliminary results will be shown.
     """
@@ -60,32 +60,32 @@ def play_ai(track: np.ndarray, episodes_to_train: int, preliminary_results: int 
     if playstyle_interactive:
         preliminary_results = None
 
-    model = ModelRLMC(random_state=42)
+    agent = Agent(random_state=42)
     game = Game(racetrack=track, random_state=42)
     visualizer = EpisodeVisualizer()
 
     # Train Model
-    print("Training model...")
+    print("Training agent...")
     if preliminary_results is not None:
         print("* <n_episode> <n_steps> ")
     else:
         print("* <n_episode> ")
     start = time.time()
     for i in range(1, episodes_to_train + 1):
-        # play one episode & train the model on this episode
+        # play one episode & train the agent on this episode
         episode: list[tuple[State, Action, int]] = []
         while not game.is_finished() and game.get_n_steps() < 1000:
             state = game.get_state()
-            action = model.determine_epsilon_action(state, 0.1)
+            action = agent.determine_epsilon_action(state, 0.1)
             reward = game.noisy_step(action)
             episode.append((state, action, reward))
-        model.learn(episode)
+        agent.learn(episode)
         game.reset()
         # show preliminary results, if specified
         if preliminary_results is not None:
             if i % preliminary_results == 0 or i == 1:
                 test_game = Game(racetrack=track, random_state=43)
-                test_episode = play_single_game(test_game, copy.deepcopy(model))
+                test_episode = play_single_game(test_game, copy.deepcopy(agent))
                 test_episode.append((test_game.get_state(), Action(0, 0), 0))  # Append last state for drawing
                 visualizer.visualize_episode(track, test_episode,
                                              f"racetrack | training: n_episode={i}, n_steps={test_game.get_n_steps()}")
@@ -97,12 +97,12 @@ def play_ai(track: np.ndarray, episodes_to_train: int, preliminary_results: int 
 
     # Evaluate Model
     game = Game(racetrack=track, random_state=43)
-    print("Evaluating trained model...")
+    print("Evaluating trained agent...")
     if playstyle_interactive:
         visualizer = InteractiveVisualizer(game.get_state_with_racetrack(), "racetrack")
         while not game.is_finished() and game.get_n_steps() < 1000:
             state = game.get_state()
-            action = model.determine_best_action(state)
+            action = agent.determine_best_action(state)
             game.step(action)
             visualizer.update_agent(game.get_state().agent_position)
             print(
@@ -116,7 +116,7 @@ def play_ai(track: np.ndarray, episodes_to_train: int, preliminary_results: int 
             episode: list[tuple[State, Action, int]] = []
             while not game.is_finished() and game.get_n_steps() < 1000:
                 state = game.get_state()
-                action = model.determine_best_action(state)
+                action = agent.determine_best_action(state)
                 reward = game.step(action)
                 episode.append((state, action, reward))
             episode.append((game.get_state(), Action(0, 0), 0))  # Append last state to episode for drawing

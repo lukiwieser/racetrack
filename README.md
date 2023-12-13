@@ -69,7 +69,7 @@ An example of this would be:
 python main.py -p ai_static -tr 42 -e 10000 -pr 1000 -fr 10
 ```
 
-Additionally, there is the jupyter notebook [model_analysis.ipynb](model_analysis.ipynb) to create exploratory statistics and plots.
+Additionally, there is the jupyter notebook [model_analysis.ipynb](agent_analysis.ipynb) to create exploratory statistics and plots.
 
 
 ## Scenario
@@ -86,12 +86,13 @@ If the car crashes into the wall, its position is reset to a random position on 
 
 ### Fundamentals
 
-*Reinforcement Learning* is a technique where an AI (also referred as model or agent) takes actions, and receives rewards as feedback.
-The AI's goal is to maximize the reward.
-It learns which actions are the best by playing lots of games. 
+*Reinforcement Learning* is a technique where an AI (also referred as agent or model) 
+interacts with an environment (such as a game) by taking actions, and receives rewards as feedback.
+The AI's goal is to maximize these rewards. 
+It learns which actions are the best by playing lots of games.
 
 *Q-Learning* is a specific type of Reinforcement Learning.
-It is model-free, meaning it doesn't require prior knowledge of the game’s rules.
+It is model-free, meaning the AI doesn't require prior knowledge of the environment's rules.
 In the context of the racetrack problem, this means the AI does not know the rules of the game, and instead learns them by trial and error.
 "Q" refers to the function that stores the expected reward for each state-action pair calculated by the algorithm.
 
@@ -101,7 +102,7 @@ Learning occurs after playing an entire game (also referred as episode).
 A similar approach, not used in this project is *Temporal Difference Learning*, where the AI learns after each individual step rather than after completing a full game.
 
 Furthermore, there are also more sophisticated and powerful reinforcement learning techniques,
-including *Deep Q-Learning* and *Policy Gradient Methods* such as *Proximal Policy Optimization(PPO)*.
+including *Deep Q-Learning* and *Policy Gradient Methods* such as *Proximal Policy Optimization (PPO)*.
 
 ### Architecture
 
@@ -189,7 +190,7 @@ We measured rewards for games (aka episodes) played by 2 models:
 In this context higher, rewards indicate that the game was finished faster.
 
 We measured the median reward of multiple models, to limit the influence of randomness, and smoothed the lineplots with lowess, for more clarity.
-The source code is in [model_analysis.ipynb](model_analysis.ipynb).
+The source code is in [model_analysis.ipynb](agent_analysis.ipynb).
 
 #### Simple Racetrack
 
