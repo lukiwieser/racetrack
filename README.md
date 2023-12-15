@@ -115,9 +115,9 @@ By playing lots of games, the AI learns which actions are best for each state.
 
 The Visualizer can visualize the game live as the AI plays or show a summary of the finished game.
 
-### Model
+### Agent & Environment
 
-We use an optimistic first-visit monte carlo model, with an epsilon greedy strategy.
+The Agent uses an optimistic first-visit monte carlo approach, with an epsilon greedy strategy.
 Here's a breakdown of its key characteristics:
 
 * Optimistic: Prioritize actions with unknown rewards, over actions with known rewards.
@@ -137,9 +137,11 @@ Keep in mind that randomness plays a role in both the model and the environment.
 
 ### Racetrack
 
-Racetracks can be predefined or randomly generated using a generator.
+Racetracks can be predefined or randomly generated.
 Predefined tracks are defined in `classes/racetrack_list.py`.
-Random tracks are created by choosing random points on a grid, followed by randomly assigning the start and finish points. Lines are then drawn to connect these points using OpenCV.
+Random tracks are created with the generator in `classes/generator.py`.
+The generator works by first choosing random points on a grid, followed by randomly assigning the start and finish points.
+Finally, lines are drawn to connect these points using OpenCV.
 
 The racetrack is internally represented by a 2-dimensional numpy array, with integer values indicating cell types:
 - 0 = OFF_TRACK
