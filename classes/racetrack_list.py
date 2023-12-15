@@ -9,6 +9,7 @@ class RacetrackList(object):
 
     @classmethod
     def _init_tracks(cls):
+        cls.__tracks = []
         cls.__tracks.append(cls.__get_track_0())
         cls.__tracks.append(cls.__get_track_1())
         cls.__tracks.append(cls.__get_track_2())
