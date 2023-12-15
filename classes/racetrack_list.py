@@ -2,7 +2,10 @@ import numpy as np
 
 
 class RacetrackList(object):
-    __tracks = []
+    """
+    Predefined list of racetracks.
+    """
+    __tracks: list[np.ndarray] = []
 
     @classmethod
     def _init_tracks(cls):
@@ -45,5 +48,6 @@ class RacetrackList(object):
         track[19:35, 0] = 3
         track[0, 19:29] = 2
         return track
+
 
 RacetrackList._init_tracks()
