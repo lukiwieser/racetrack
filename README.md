@@ -243,6 +243,6 @@ Here are some key takeaways from our project:
 ## Credits
 
 This project was created by students as part of a lecture at the *Vienna University of Technology*.
-It is inspired by an exercise in the book *Reinforcement Learning: An Introduction by Andrew Barto and Richard S. Sutton* on page 111.
+It is inspired by Exercise 5.9 in the book *Reinforcement Learning: An Introduction* by Andrew Barto and Richard S. Sutton, located on page 111.
 
 Negar Alinaghi, Benjamin Probst, Lukas Wieser • 12.10.2023
